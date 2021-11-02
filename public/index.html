@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google sign in</title>
+    <meta name="google-signin-client_id" content="607793417050-8qd5ekkruok4k6sg6t3td0e8tu8hdlme.apps.googleusercontent.com">
+</head>
+<body>
+    <h1>Google sign in</h1>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+
+
+
+    <a href="#" onclick="signOut();">Sign out</a>
+
+    
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script>
+        // Si estoy en producción uso el localhost y si no el otro
+        var url = (window.location.hostname.includes('localhost'))
+                ? 'http://localhost:8080/api/auth/google'
+                : 'https://servidor-montado-url/api/auth/google'
+
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+            console.log('Full Name: ' + profile.getName());
+            console.log('Given Name: ' + profile.getGivenName());
+            console.log('Family Name: ' + profile.getFamilyName());
+            console.log("Image URL: " + profile.getImageUrl());
+            console.log("Email: " + profile.getEmail());
+    
+            // The ID token you need to pass to your backend:
+            var id_token = googleUser.getAuthResponse().id_token;
+            const data = {id_token}
+
+            fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(resp => resp.json())
+            .then(data => console.log(data))
+            .catch(console.log)
+        }
+
+        function signOut(){
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function(){
+                console.log('User signed out');
+            })
+        }
+    </script>
+
+      
+</body>
+</html>
