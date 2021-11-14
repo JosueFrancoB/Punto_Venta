@@ -1,0 +1,11 @@
+{
+    "mongo": {
+        "enabled": true,
+        "use_defaults": true,
+        "host": "localhost",
+        "port": 27017,
+        "user": "",
+        "pass": "",
+        "db": "puntoventa"
+    }
+}

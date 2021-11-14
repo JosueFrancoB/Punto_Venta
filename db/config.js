@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
-
+const fs = require('fs');
 
 
 const dbConnection = async()=>{
     try {
 
-        await mongoose.connect(process.env.MONGODB_CONN, {
+        let config = JSON.parse(fs.readFileSync('./config/config.json'))
+        await mongoose.connect(`mongodb://${((config.mongo.user !== '') ? config.mongo.user + ':' + ((config.mongo.pass !== '') ? config.mongo.pass + '@' : '@') : '')}${config.mongo.host}${((config.mongo.port !== '') ? ':' + config.mongo.port : '')}/${config.mongo.db}`, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,
