@@ -4,12 +4,10 @@ const ClienteSchema = Schema({
     nombre: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
-        unique: true
     },
     nombre_empresa: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
-        unique: true
     },
     telefono: {
         type: String,

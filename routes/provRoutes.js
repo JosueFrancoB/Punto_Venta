@@ -8,47 +8,45 @@ const {check} = require('express-validator');
 const {
     validarCampos,
     validarJWT,
-    esAdminRole,
-    tieneRole
+    validarRFC,
+    esAdminRole
 } = require('../middlewares')
 
-const {esRoleValido, emailExiste, existeUserPorId} = require('../helpers/db-validators');
+const {emailExiste, existeProvedorPorId} = require('../helpers/db-validators');
 
 const {
-    usersGet, usersPost, usersPut, usersDelete
-} = require('../controllers/usersCtrl');
+    provGet, provPost, provPut, provDelete
+} = require('../controllers/provCtrl');
 
 const router = Router();
 
 // Solo los dejo con la / porque en el server ya le estoy asignando su ruta
-router.get('/', usersGet);
+router.get('/', provGet);
 
 router.put('/:id', [
     check('id', 'No es un id válido').isMongoId(),
-    check('id').custom(existeUserPorId),
-    check('rol').custom(esRoleValido),
+    check('id').custom(existeProvedorPorId),
     validarCampos
-], usersPut);
+], provPut);
 // Los middleware se mandan en el 2 argumento cuando se quieren agregar y si son varios se mandan con un arreglo
 // en este caso se usan para que validen todos los campos antes de hacer el método post
 router.post('/', [
-    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('password', 'La contraseña debe tener más de 6 letras').isLength({min: 6}),
+    check('nombre_contacto', 'El nombre de contacto es obligatorio').not().isEmpty(),
+    check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
+    check('telefono', 'El telefono es obligatorio').not().isEmpty().isMobilePhone().custom((t) => telefonoUnico(t,"prov")),
     check('correo', 'El correo no es válido').isEmail(),
-    check('correo').custom((c) => emailExiste(c,"user")),
-    // check('rol', 'No es un rol permitido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
-    check('rol').custom(esRoleValido),
+    check('correo').custom((c) => emailExiste(c,"prov")),
+    check('rfc', 'El rfc no es válido').custom(validarRFC),
     validarCampos
-], usersPost); 
+], provPost); 
 
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
-    tieneRole('ADMIN_ROLE', 'VENTAS_ROLE'),
     check('id', 'No es un id válido').isMongoId(),
-    check('id').custom(existeUserPorId),
+    check('id').custom(existeProvedorPorId),
     validarCampos
-], usersDelete)
+], provDelete)
 
 
 module.exports = router;

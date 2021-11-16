@@ -4,12 +4,10 @@ const ProveedorSchema = Schema({
     nombre_contacto: {
         type: String,
         required: [true, 'El nombre es obligatorio'],
-        unique: true
     },
     nombre_empresa: {
         type: String,
         required: [true, 'El nombre de la empresa es obligatorio'],
-        unique: true
     },
     telefono: {
         type: String,

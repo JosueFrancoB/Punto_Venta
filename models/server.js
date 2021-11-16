@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
-const { dbConnection } = require('../db/config');
+const { dbConnection, crearRoles } = require('../db/config');
 
 class Server{
 
@@ -14,7 +14,8 @@ class Server{
             categorias: '/api/categorias',
             productos: '/api/productos',
             uploads: '/api/uploads',
-            users: '/api/users'
+            users: '/api/users',
+            providers: '/api/providers'
         }
         
         // Conectarse a db
@@ -23,12 +24,19 @@ class Server{
         // Middlewares funciones que se ejecutan al inicio
         this.middlewares();
 
+        //Crea roles en la db que se especifican en el archivo config.json
+        this.dbRoles()
+
         // rutas
         this.routes();
     }
 
     async conectarDB(){
         await dbConnection();
+    }
+
+    async dbRoles(){
+        await crearRoles()
     }
 
     middlewares(){
@@ -57,6 +65,7 @@ class Server{
         this.app.use(this.rutas.productos, require('../routes/productosRoutes'));
         this.app.use(this.rutas.uploads, require('../routes/uploadsRoutes'));
         this.app.use(this.rutas.users, require('../routes/usersRoutes'));
+        this.app.use(this.rutas.providers, require('../routes/provRoutes'));
     }
 
     listen(){

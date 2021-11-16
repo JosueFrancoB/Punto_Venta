@@ -1,5 +1,5 @@
 const Role = require('../models/role');
-const {Usuario, Categoria, Producto} = require('../models');
+const {Usuario, Categoria, Producto, Proveedor, Cliente} = require('../models');
 
 const esRoleValido = async(rol = '') =>{
     const existeRol = await Role.findOne({rol});
@@ -9,14 +9,15 @@ const esRoleValido = async(rol = '') =>{
 }
 
 // Verificar si el correo es repetido
-const emailExiste = async(correo = '')=>{
-    const existeEmail = await Usuario.findOne({correo: correo});
+const emailExiste = async(correo = '', db_model = "")=>{
+    let db_models = {"user": Usuario, "prov": Proveedor, "cli": Cliente}
+    const existeEmail = await db_models[db_model].findOne({correo: correo});
     if(existeEmail){
         throw new Error(`El correo ${correo}, ya está registrado`)
     }
 }
 
-// Verificar si el correo es repetido
+// Verificar si el usuario existe
 const existeUserPorId = async (id) =>{
     const existeUser = await Usuario.findById(id);
     if(!existeUser){
@@ -48,11 +49,29 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) =>{
     return true;
 }
 
+const telefonoUnico = async(telefono = '', db_model = "") =>{
+    let db_models = {"prov": Proveedor, "cli": Cliente}
+    const existeTelefono = await db_models[db_model].findOne({telefono: telefono})
+    if (existeTelefono){
+        throw new Error(`El teléfono ${telefono} ya existe`)
+    }
+}
+
+// Verificar si el proveedor existe
+const existeProvedorPorId = async (id) =>{
+    const existeProveedor = await Proveedor.findById(id);
+    if(!existeProveedor){
+        throw new Error(`El id ${id} no existe`)
+    }
+}
+
 module.exports ={
     esRoleValido,
     emailExiste,
     existeUserPorId,
     existeCategoriaPorId,
     existeProductoPorId,
-    coleccionesPermitidas
+    coleccionesPermitidas,
+    telefonoUnico,
+    existeProvedorPorId
 } 

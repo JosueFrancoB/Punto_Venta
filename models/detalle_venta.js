@@ -1,6 +1,6 @@
 const {Schema, model} = require('mongoose');
 
-const DetEntradaSchema = Schema({
+const DetVentaSchema = Schema({
     venta: {
         type: Schema.Types.ObjectId,
         ref: 'Venta',
@@ -25,7 +25,7 @@ const DetEntradaSchema = Schema({
     }
 });
 
-DetEntradaSchema.methods.toJSON = function (){
+DetVentaSchema.methods.toJSON = function (){
     
     // Convierto el schema a un objeto de javascript con this.toObject
     const { __v, estado, ...data } = this.toObject();
@@ -33,4 +33,4 @@ DetEntradaSchema.methods.toJSON = function (){
     return data;
 }
 
-module.exports = model('DetEntrada', DetEntradaSchema);
+module.exports = model('DetVenta', DetVentaSchema);

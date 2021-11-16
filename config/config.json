@@ -7,5 +7,9 @@
         "user": "",
         "pass": "",
         "db": "puntoventa"
+    },
+    "roles":{
+        "rol1": "USER_ROLE",
+        "rol2": "ADMIN_ROLE"
     }
 }
