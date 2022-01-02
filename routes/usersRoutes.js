@@ -15,15 +15,18 @@ const {
 const {esRoleValido, emailExiste, existeUserPorId} = require('../helpers/db-validators');
 
 const {
-    usersGet, usersPost, usersPut, usersDelete
+    usersGet, getUserById, usersPost, usersPut, usersDelete
 } = require('../controllers/usersCtrl');
 
 const router = Router();
 
 // Solo los dejo con la / porque en el server ya le estoy asignando su ruta
-router.get('/', usersGet);
+router.get('/', validarJWT, usersGet);
+
+router.get('/:id', [], getUserById);
 
 router.put('/:id', [
+    validarJWT,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeUserPorId),
     check('rol').custom(esRoleValido),
@@ -38,8 +41,8 @@ router.post('/', [
     check('correo').custom((c) => emailExiste(c,"user")),
     // check('rol', 'No es un rol permitido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
     check('rol').custom(esRoleValido),
-    validarCampos
-], usersPost); 
+    validarCampos,
+], usersPost);
 
 router.delete('/:id', [
     validarJWT,

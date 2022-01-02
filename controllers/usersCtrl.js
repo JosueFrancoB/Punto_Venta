@@ -1,6 +1,7 @@
 const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
+const { generarJWT } = require('../helpers/generarJWT');
 
 // Se les igualo req = request para que me aparezcan las opciones y ayudas de vscode
 const usersGet = async(req = request, res = response) =>{
@@ -34,11 +35,21 @@ const usersGet = async(req = request, res = response) =>{
     });
 }
 
+const getUserById = async(req, res = response)=>{
+    // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
+    const {id} = req.params;
+
+    const usuario = await Usuario.findById(id);
+    
+    res.json(usuario);
+
+}
 const usersPost = async(req, res = response) =>{
 
-    
-
-    const {nombre, correo, password, rol} = req.body;
+    let {nombre, correo, password, rol} = req.body;
+    if (!rol){
+        rol = 'USER_ROLE'
+    }
     const usuario = new Usuario({nombre, correo, password, rol});
 
     
@@ -47,9 +58,19 @@ const usersPost = async(req, res = response) =>{
     const salt = bcryptjs.genSaltSync();
     usuario.password = bcryptjs.hashSync(password, salt);
 
+    const token = await generarJWT(usuario.id); 
     await usuario.save();
+    
+    const {rol: u_rol, estado, google, nombre: name, correo: mail, uid} = usuario
     res.json({
-        usuario
+        rol: u_rol,
+        estado,
+        google, 
+        nombre: name, 
+        correo: mail, 
+        uid,
+        token,
+        ok: true
     });
 }
 
@@ -92,6 +113,7 @@ const usersDelete = async(req, res = response) =>{
 
 module.exports = {
     usersGet,
+    getUserById,
     usersPost,
     usersPut,
     usersDelete
