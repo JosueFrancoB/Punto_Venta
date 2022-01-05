@@ -9,13 +9,13 @@ class Server{
         this.app = express();
         this.port = process.env.PORT;
         this.rutas = {
-            auth: '/api/auth',
-            buscar: '/api/buscar',
+            auth      : '/api/auth',
+            buscar    : '/api/buscar',
             categorias: '/api/categorias',
-            productos: '/api/productos',
-            uploads: '/api/uploads',
-            users: '/api/users',
-            providers: '/api/providers'
+            productos : '/api/productos',
+            uploads   : '/api/uploads',
+            users     : '/api/users',
+            providers : '/api/providers'
         }
         
         // Conectarse a db
@@ -59,12 +59,12 @@ class Server{
     }
 
     routes(){
-        this.app.use(this.rutas.auth, require('../routes/authRoutes'));
-        this.app.use(this.rutas.buscar, require('../routes/buscarRoutes'));
-        this.app.use(this.rutas.categorias, require('../routes/categoriasRoutes'));
+        this.app.use(this.rutas.auth,      require('../routes/authRoutes'));
+        this.app.use(this.rutas.buscar,    require('../routes/buscarRoutes'));
+        this.app.use(this.rutas.categorias,require('../routes/categoriasRoutes'));
         this.app.use(this.rutas.productos, require('../routes/productosRoutes'));
-        this.app.use(this.rutas.uploads, require('../routes/uploadsRoutes'));
-        this.app.use(this.rutas.users, require('../routes/usersRoutes'));
+        this.app.use(this.rutas.uploads,   require('../routes/uploadsRoutes'));
+        this.app.use(this.rutas.users,     require('../routes/usersRoutes'));
         this.app.use(this.rutas.providers, require('../routes/provRoutes'));
     }
 
