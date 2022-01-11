@@ -9,13 +9,13 @@ class Server{
         this.app = express();
         this.port = process.env.PORT;
         this.rutas = {
-            auth      : '/api/auth',
-            buscar    : '/api/buscar',
-            categorias: '/api/categorias',
-            productos : '/api/productos',
-            uploads   : '/api/uploads',
-            users     : '/api/users',
-            providers : '/api/providers'
+            auth: '/auth',
+            buscar: '/buscar',
+            categorias: '/categorias',
+            productos: '/productos',
+            uploads: '/uploads',
+            users: '/users',
+            providers: '/providers'
         }
         
         // Conectarse a db

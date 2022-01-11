@@ -1,6 +1,7 @@
 const {response, request} = require('express');
 const bcryptjs = require('bcryptjs');
 const Usuario = require('../models/usuario');
+const { generarJWT } = require('../helpers/generarJWT');
 
 // Se les igualo req = request para que me aparezcan las opciones y ayudas de vscode
 const usersGet = async(req = request, res = response) =>{
@@ -10,8 +11,8 @@ const usersGet = async(req = request, res = response) =>{
     // const {nombre, apikey, page = 1, limit} = req.query;
 
     // Puedo mandar el limite de pagina en el query (en la url), y si no por defecto es 5 url?limite=5
-    const {limite = 5, desde = 0} = req.query;
-    const query = {estado: true};
+    const {limite = 10, desde = 0} = req.query;
+    const query = {deleted: false};
     // con number lo convertimos porque viene en string
     // le ponemos que solo me traiga los que no esten borrados osea que tengan el estado true
     // const usuarios = await Usuario.find({estado: true})
@@ -30,33 +31,52 @@ const usersGet = async(req = request, res = response) =>{
 
     res.json({
         total,
-        usuarios
+        usuarios,
+        ok: true
     });
 }
 
+const getUserById = async(req, res = response)=>{
+    // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
+    const {id} = req.params;
+
+    const usuario = await Usuario.findById(id, {deleted: false});
+    
+    res.json({usuario, ok: true});
+
+}
 const usersPost = async(req, res = response) =>{
 
-    
-
-    const {nombre, correo, password, rol} = req.body;
-    const usuario = new Usuario({nombre, correo, password, rol});
-
-    
+    let {nombre, correo, password, rol, img = ''} = req.body;
+    if (!rol){
+        rol = 'Usuario'
+    }
+    const usuario = new Usuario({nombre, correo, password, rol, img});
 
     // Encriptar contraseña
     const salt = bcryptjs.genSaltSync();
     usuario.password = bcryptjs.hashSync(password, salt);
-
+    const token = await generarJWT(usuario.id); 
     await usuario.save();
+    
+    const {rol: u_rol, estado, google, nombre: name, img: im, correo: mail, uid} = usuario
     res.json({
-        usuario
+        rol: u_rol,
+        estado,
+        google, 
+        nombre: name, 
+        correo: mail, 
+        uid,
+        img: im,
+        token,
+        ok: true
     });
 }
 
 const usersPut = async(req, res = response) =>{
     // Esto para cuando los parametros se los ponemos directos en la ruta
     const {id} = req.params;
-    const {_id, password, google, correo, ...resto} = req.body;
+    const {_id, password, google, ...resto} = req.body;
 
     if(password){
         // Encriptar contraseña
@@ -66,7 +86,7 @@ const usersPut = async(req, res = response) =>{
 
     const usuario = await Usuario.findByIdAndUpdate(id, resto);
 
-    res.json(usuario);
+    res.json({usuario, ok: true});
 }
 
 const usersDelete = async(req, res = response) =>{
@@ -77,21 +97,19 @@ const usersDelete = async(req, res = response) =>{
     // const usuario = await Usuario.findByIdAndDelete(id);
 
     // Borrarlo solo para la vista
-    const usuario = await Usuario.findByIdAndUpdate(id, {estado: false});
+    const usuario = await Usuario.findByIdAndUpdate(id, {deleted: true});
 
     const usuarioAutenticado = req.usuario; 
 
 
     res.json({
-        usuario, usuarioAutenticado
+        usuario, usuarioAutenticado, ok: true
     });
 }
 
-
-
-
 module.exports = {
     usersGet,
+    getUserById,
     usersPost,
     usersPut,
     usersDelete

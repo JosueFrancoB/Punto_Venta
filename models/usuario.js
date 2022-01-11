@@ -20,12 +20,16 @@ const UsuarioSchema = Schema({
     rol: {
         type: String,
         required: true,
-        default: 'USER_ROLE',
-        enum: ['ADMIN_ROLE', 'USER_ROLE']
+        default: 'Usuario',
+        enum: ['Administrador', 'Usuario']
     },
     estado: {
         type: Boolean,
         default: true
+    },
+    deleted:{
+        type: Boolean,
+        default: false
     },
     google: {
         type: Boolean,
