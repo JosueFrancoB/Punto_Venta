@@ -10,6 +10,7 @@ const crearCategoria = async(req, res = response)=>{
 
     if(categoriaDB){
         res.status(400).json({
+            ok: false,
             msg: `La categoría ${categoriaDB.nombre} ya existe`
         })
     }
@@ -28,7 +29,10 @@ const crearCategoria = async(req, res = response)=>{
     await categoria.save();
 
     // Status 201 algo se creó
-    res.status(201).json(categoria)
+    res.status(201).json({
+        ok: true,
+        categoria
+    })
 
 }
 
@@ -45,6 +49,7 @@ const categoriasGet = async(req, res = response)=>{
     ]);
 
     res.json({
+        ok: true,
         total,
         categorias
     });
@@ -57,6 +62,7 @@ const getCategoriaPorID = async(req, res = response)=>{
     const categoria = await Categoria.findById(id).populate('usuario', 'nombre');
     
     res.json({
+        ok:true,
         categoria,
         // categoria
     })
@@ -71,7 +77,10 @@ const updateCategoria = async(req, res = response)=>{
     // lo de new: true nada más es para que en la variable categoria se guarde ya actualizado y verlo en la respuesta
     const categoria = await Categoria.findByIdAndUpdate(id, data, {new: true});
 
-    res.json(categoria);
+    res.json({
+        ok: true,
+        categoria
+    });
 }
 
 const deleteCategoria  = async(req, res = response)=>{
@@ -80,6 +89,7 @@ const deleteCategoria  = async(req, res = response)=>{
     const categoriaBorrada = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true});
 
     res.json({
+        ok: true,
         categoriaBorrada
     });
 }

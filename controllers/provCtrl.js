@@ -29,6 +29,7 @@ const provGet = async(req = request, res = response) =>{
     ]);
 
     res.json({
+        ok: true,
         total,
         proveedores
     });
@@ -44,6 +45,7 @@ const provPost = async(req, res = response) =>{
 
     await proveedor.save();
     res.json({
+        ok: true,
         proveedor
     });
 }
@@ -55,7 +57,10 @@ const provPut = async(req, res = response) =>{
 
     const proveedor = await Proveedor.findByIdAndUpdate(id, resto);
 
-    res.json(proveedor);
+    res.json({
+        ok: true,
+        proveedor
+    });
 }
 
 const provDelete = async(req, res = response) =>{
@@ -69,6 +74,7 @@ const provDelete = async(req, res = response) =>{
     const proveedor = await Proveedor.findByIdAndUpdate(id, {estado: false});
 
     res.json({
+        ok: true,
         proveedor
     });
 }
