@@ -15,15 +15,23 @@ const {
 const {esRoleValido, emailExiste, existeUserPorId} = require('../helpers/db-validators');
 
 const {
-    usersGet, usersPost, usersPut, usersDelete
+    usersGet, getUserById, usersPost, usersPut, usersDelete
 } = require('../controllers/usersCtrl');
 
 const router = Router();
 
 // Solo los dejo con la / porque en el server ya le estoy asignando su ruta
-router.get('/', usersGet);
+router.get('/', validarJWT, usersGet);
+
+router.get('/:id', [
+    validarJWT,
+    check('id', 'No es un id válido').isMongoId(),
+    check('id').custom(existeUserPorId),
+    validarCampos
+], getUserById);
 
 router.put('/:id', [
+    validarJWT,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeUserPorId),
     check('rol').custom(esRoleValido),
@@ -32,19 +40,21 @@ router.put('/:id', [
 // Los middleware se mandan en el 2 argumento cuando se quieren agregar y si son varios se mandan con un arreglo
 // en este caso se usan para que validen todos los campos antes de hacer el método post
 router.post('/', [
+    //+ Solo lo valido jwt cuando no es registro
+    validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('password', 'La contraseña debe tener más de 6 letras').isLength({min: 6}),
     check('correo', 'El correo no es válido').isEmail(),
     check('correo').custom((c) => emailExiste(c,"user")),
     // check('rol', 'No es un rol permitido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
     check('rol').custom(esRoleValido),
-    validarCampos
-], usersPost); 
+    validarCampos,
+], usersPost);
 
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
-    tieneRole('ADMIN_ROLE', 'VENTAS_ROLE'),
+    tieneRole('Administrador'),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeUserPorId),
     validarCampos
