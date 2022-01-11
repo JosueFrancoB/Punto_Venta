@@ -8,8 +8,13 @@
         "pass": "",
         "db": "puntoventa"
     },
-    "roles": {
-        "rol1": "Usuario",
-        "rol2": "Administrador"
+       "roles":{
+        "rol1": "Administrador",
+        "rol2": "Usuario"
+    },
+      "app": {
+        "port": 5000
     }
+  
+
 }
