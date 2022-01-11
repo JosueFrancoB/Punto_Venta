@@ -13,11 +13,13 @@ const crearCategoria = async(req, res = response)=>{
             msg: `La categoría ${categoriaDB.nombre} ya existe`
         })
     }
-
+    const { descripcion, estado} = req.body;
+    
     // Generar data a guardar
     const data = {
         nombre,
-        usuario: req.usuario._id
+        descripcion,
+        estado
     }
 
     const categoria = new Categoria(data);
@@ -63,10 +65,9 @@ const getCategoriaPorID = async(req, res = response)=>{
 
 const updateCategoria = async(req, res = response)=>{
     const {id} = req.params;
-    const {estado, usuario, ...data} = req.body;
-    
-    data.nombre = data.nombre.toUpperCase();
-    data.usuario = req.usuario._id;
+    const { estado, ...data } = req.body;
+    // data.nombre = data.nombre.toUpperCase();
+    // data.usuario = req.usuario._id;
     // lo de new: true nada más es para que en la variable categoria se guarde ya actualizado y verlo en la respuesta
     const categoria = await Categoria.findByIdAndUpdate(id, data, {new: true});
 

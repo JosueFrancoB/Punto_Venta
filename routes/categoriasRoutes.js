@@ -19,23 +19,22 @@ router.get('/:id', [
 
 // Crear una categoria - privado cualquier persona con token válido
 router.post('/', [
-    validarJWT,
+    ////validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     validarCampos
 ], crearCategoria);
 
 // Actualizar - privado cualquier persona con token válido
-router.put('/:id', [
-    validarJWT,
+router.patch('/:id', [
+    //validarJWT,
     check('id', 'No es un id válido').isMongoId(),
-    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('id').custom(existeCategoriaPorId),
     validarCampos
 ], updateCategoria);
 
 // Borrar categoría - privado solo si es admin
 router.delete('/:id', [
-    validarJWT,
+    //validarJWT,
     esAdminRole,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeCategoriaPorId),

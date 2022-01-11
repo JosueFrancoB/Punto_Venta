@@ -11,5 +11,9 @@
     "roles":{
         "rol1": "USER_ROLE",
         "rol2": "ADMIN_ROLE"
+    },
+    "app": {
+        "port": 5000
     }
+
 }
