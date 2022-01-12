@@ -19,7 +19,7 @@ router.get('/:id', [
 
 // Crear una Producto - privado cualquier persona con token válido
 router.post('/', [
-    validarJWT,
+    // validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('categoria', 'No es un id válido').isMongoId(),
     check('categoria').custom(existeCategoriaPorId),

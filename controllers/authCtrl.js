@@ -14,6 +14,7 @@ const login = async(req, res = response)=>{
         const usuario = await Usuario.findOne({correo});
         if(!usuario){
             return res.status(400).json({
+                ok: false,
                 msg: 'El correo no existe'
             });
         }
@@ -21,6 +22,7 @@ const login = async(req, res = response)=>{
         // Si el usuario no está borrado esta con estado true
         if(!usuario.estado){
             return res.status(400).json({
+                ok: false,
                 msg: 'El correo no está habilitado'
             });
         }
@@ -30,6 +32,7 @@ const login = async(req, res = response)=>{
         const validPassword = bcryptjs.compareSync(password, usuario.password);
         if(!validPassword){
             return res.status(400).json({
+                ok: false,
                 msg: 'La contraseña es incorrecta'
             });
         }
@@ -80,6 +83,7 @@ const googleSignIn = async(req = request, res = response, )=>{
 
         if(!usuario.estado){
             res.status(401).json({
+                ok: false,
                 msg: 'Hable con el admin, usuario bloqueado'
             })
         }
@@ -93,6 +97,7 @@ const googleSignIn = async(req = request, res = response, )=>{
         })
     } catch (error) {
         res.status(400).json({
+            ok: false,
             msg: 'El token no es válido'
         })
     }

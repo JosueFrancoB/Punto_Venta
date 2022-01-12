@@ -6,20 +6,33 @@ const ProductoSchema = Schema({
         required: [true, 'El nombre es obligatorio'],
         unique: true
     },
+    clave: {
+        type: String,
+    },
+    clave_alterna: {
+        type: String,
+    },
     estado: {
         type: Boolean,
         default: true,
-        required: true
     },
-    // El usuario que lo crea
-    usuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        required: true
-    },
-    precio: {
+    precio_compra: {
         type: Number,
         default: 0
+    },
+    precio_venta: {
+        type: Number,
+        default: 0
+    },
+    unidad_venta:{
+        type: String,
+    },
+    unidad_compra:{
+        type: String,
+    },
+    factor: {
+        type: Number,
+        default: 1
     },
     categoria: {
         type: Schema.Types.ObjectId,
@@ -35,7 +48,27 @@ const ProductoSchema = Schema({
     },
     img: {
         type: String
+    },
+    granel: {
+        type: Boolean
+    },
+    inventario_max: {
+        type: Number,
+        default: 0
+    },
+    inventario_min: {
+        type: Number,
+        default: 0
+    },
+    proveedor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Proveedor',
+    },
+    existencias: {
+        type: Number,
+        default: 0
     }
+
 });
 
 

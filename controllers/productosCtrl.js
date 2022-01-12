@@ -4,12 +4,13 @@ const {Producto} = require("../models");
 
 const crearProducto = async(req, res = response)=>{
 
-    const {estado, usuario, ...body} = req.body;
+    const {estado, ...body} = req.body;
 
     const productoDB = await Producto.findOne({nombre: body.nombre});
 
     if(productoDB){
         res.status(400).json({
+            ok: false,
             msg: `El producto ${productoDB.nombre} ya existe`
         })
     }
@@ -19,7 +20,6 @@ const crearProducto = async(req, res = response)=>{
     const data = {
         ...body,
         nombre: body.nombre.toUpperCase(),
-        usuario: req.usuario._id
     }
 
     const producto = new Producto(data);
@@ -28,7 +28,10 @@ const crearProducto = async(req, res = response)=>{
     await producto.save();
 
     // Status 201 algo se creó
-    res.status(201).json(producto)
+    res.status(201).json({
+        ok: true,
+        producto
+    })
 
 }
 
@@ -46,6 +49,7 @@ const ProductosGet = async(req, res = response)=>{
     ]);
 
     res.json({
+        ok: true,
         total,
         productos
     });
@@ -57,7 +61,10 @@ const getProductoPorID = async(req, res = response)=>{
 
     const producto = await Producto.findById(id).populate('usuario', 'nombre').populate('categoria', 'nombre');
     
-    res.json(producto);
+    res.json({
+        ok: true,
+        producto
+    });
 
 }
 
@@ -73,7 +80,10 @@ const updateProducto = async(req, res = response)=>{
     // lo de new: true nada más es para que en la variable Producto se guarde ya actualizado y verlo en la respuesta
     const producto = await Producto.findByIdAndUpdate(id, data, {new: true});
 
-    res.json(producto);
+    res.json({
+        ok: true,
+        producto
+    });
 }
 
 const deleteProducto  = async(req, res = response)=>{
@@ -82,6 +92,7 @@ const deleteProducto  = async(req, res = response)=>{
     const productoBorrado = await Producto.findByIdAndUpdate(id, {estado: false}, {new: true});
 
     res.json({
+        ok:true,
         productoBorrado
     });
 }
