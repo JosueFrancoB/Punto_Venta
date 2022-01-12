@@ -3,7 +3,9 @@ const {Categoria} = require("../models");
 
 
 const crearCategoria = async(req, res = response)=>{
-
+    
+    console.log(req.boy);
+    console.log(req);
     const nombre = req.body.nombre.toUpperCase();
 
     const categoriaDB = await Categoria.findOne({nombre});
@@ -14,12 +16,12 @@ const crearCategoria = async(req, res = response)=>{
             msg: `La categoría ${categoriaDB.nombre} ya existe`
         })
     }
-    const { descripcion, estado} = req.body;
+    const { img, estado} = req.body;
     
     // Generar data a guardar
     const data = {
         nombre,
-        descripcion,
+        img,
         estado
     }
 
@@ -37,7 +39,7 @@ const crearCategoria = async(req, res = response)=>{
 }
 
 const categoriasGet = async(req, res = response)=>{
-    const {limite = 5, desde = 0} = req.query;
+    const {limite = 10, desde = 0} = req.query;
     const query = {estado: true};
 
     const [total, categorias] = await Promise.all([
@@ -59,7 +61,7 @@ const getCategoriaPorID = async(req, res = response)=>{
     // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
     const {id} = req.params;
 
-    const categoria = await Categoria.findById(id).populate('usuario', 'nombre');
+    const categoria = await Categoria.findById(id);
     
     res.json({
         ok:true,
@@ -72,6 +74,7 @@ const getCategoriaPorID = async(req, res = response)=>{
 const updateCategoria = async(req, res = response)=>{
     const {id} = req.params;
     const { estado, ...data } = req.body;
+    console.log('la data', data);
     // data.nombre = data.nombre.toUpperCase();
     // data.usuario = req.usuario._id;
     // lo de new: true nada más es para que en la variable categoria se guarde ya actualizado y verlo en la respuesta
