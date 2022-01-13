@@ -36,8 +36,11 @@ const crearProducto = async(req, res = response)=>{
 }
 
 const ProductosGet = async(req, res = response)=>{
-    const {limite = 5, desde = 0} = req.query;
+    const {limite = 10, desde = 0, category = ''} = req.query;
     const query = {estado: true};
+    if (category != ''){
+        query.categoria = category
+    }
 
     const [total, productos] = await Promise.all([
         Producto.countDocuments(query),
@@ -66,6 +69,29 @@ const getProductoPorID = async(req, res = response)=>{
         producto
     });
 
+}
+
+const getProductosPorCategoria = async(req, res = response)=>{
+    const {limite = 10, desde = 0} = req.query;
+    
+    const {id} = req.params;
+
+    const query = {estado: true, categoria: id};
+    
+    const [total, productos] = await Promise.all([
+        Producto.countDocuments(query),
+        Producto.find(query)
+        .populate('usuario', 'nombre')
+        .populate('categoria', 'nombre')
+        .skip(Number(desde))
+        .limit(Number(limite))
+    ]);
+
+    res.json({
+        ok: true,
+        total,
+        productos
+    });
 }
 
 const updateProducto = async(req, res = response)=>{
@@ -101,6 +127,7 @@ module.exports = {
     crearProducto,
     ProductosGet,
     getProductoPorID,
+    getProductosPorCategoria,
     updateProducto,
     deleteProducto
 }

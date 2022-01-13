@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const {check} = require('express-validator');
-const { crearProducto, ProductosGet, getProductoPorID, updateProducto, deleteProducto } = require('../controllers/productosCtrl');
+const { crearProducto, ProductosGet, getProductoPorID, getProductosPorCategoria, updateProducto, deleteProducto } = require('../controllers/productosCtrl');
 const { existeProductoPorId, existeCategoriaPorId } = require('../helpers/db-validators');
 const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 
@@ -16,6 +16,13 @@ router.get('/:id', [
     check('id').custom(existeProductoPorId),
     validarCampos
 ], getProductoPorID);
+
+// Obtener una Producto por id de categoria- servicio publico
+router.get('/categoria/:id', [
+    check('id', 'No es un id válido').isMongoId(),
+    check('id').custom(existeCategoriaPorId),
+    validarCampos
+], getProductosPorCategoria);
 
 // Crear una Producto - privado cualquier persona con token válido
 router.post('/', [
