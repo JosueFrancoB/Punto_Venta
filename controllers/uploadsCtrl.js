@@ -1,6 +1,6 @@
 const { response } = require("express");
 const {subirArchivo} = require('../helpers');
-const {Usuario, Producto} = require('../models');
+const {Usuario, Producto, Categoria} = require('../models');
 const path = require('path');
 const fs = require('fs');
 
@@ -11,11 +11,11 @@ const cargarArchivo = async(req, res=response)=>{
         //txt md
         // const nombre = await subirArchivo(req.files, ['txt', 'md']);
         const nombre = await subirArchivo(req.files, undefined, 'imgs');
-        res.json({nombre})
+        res.json({nombre, ok: true})
 
     } catch (msg) {
         res.status(400).json({
-            ok: true,
+            ok: false,
             msg
         })
     }
@@ -44,6 +44,15 @@ const actualizarImagen = async(req, res=response)=>{
                 return res.status(400).json({
                     ok: false,
                     msg: `No existe un producto con el id ${id}`
+                })
+            }
+        break;
+        case 'categorias':
+            modelo = await Categoria.findById(id);
+            if(!modelo){
+                return res.status(400).json({
+                    ok: false,
+                    msg: `No existe un categoria con el id ${id}`
                 })
             }
         break;
@@ -99,6 +108,15 @@ const mostrarImagen = async(req, res=response)=>{
                 return res.status(400).json({
                     ok: false,
                     msg: `No existe un producto con el id ${id}`
+                })
+            }
+        break;
+        case 'categorias':
+            modelo = await Categoria.findById(id);
+            if(!modelo){
+                return res.status(400).json({
+                    ok: false,
+                    msg: `No existe una categoria con el id ${id}`
                 })
             }
         break;

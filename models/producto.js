@@ -47,7 +47,7 @@ const ProductoSchema = Schema({
         default: true
     },
     img: {
-        type: String
+        type: String,
     },
     granel: {
         type: Boolean

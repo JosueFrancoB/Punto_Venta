@@ -34,7 +34,7 @@ router.patch('/:id', [
 
 // Borrar categoría - privado solo si es admin
 router.delete('/:id', [
-    //validarJWT,
+    validarJWT,
     esAdminRole,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeCategoriaPorId),

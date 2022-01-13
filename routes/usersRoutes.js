@@ -15,7 +15,7 @@ const {
 const {esRoleValido, emailExiste, existeUserPorId} = require('../helpers/db-validators');
 
 const {
-    usersGet, getUserById, usersPost, usersPut, usersDelete
+    usersGet, getUserById, usersPost, usersRegister, usersPut, usersDelete
 } = require('../controllers/usersCtrl');
 
 const router = Router();
@@ -50,6 +50,17 @@ router.post('/', [
     check('rol').custom(esRoleValido),
     validarCampos,
 ], usersPost);
+
+router.post('/register', [
+    //+ Solo lo valido jwt cuando no es registro
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('password', 'La contraseña debe tener más de 6 letras').isLength({min: 6}),
+    check('correo', 'El correo no es válido').isEmail(),
+    check('correo').custom((c) => emailExiste(c,"user")),
+    // check('rol', 'No es un rol permitido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+    check('rol').custom(esRoleValido),
+    validarCampos,
+], usersRegister);
 
 router.delete('/:id', [
     validarJWT,

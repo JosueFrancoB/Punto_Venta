@@ -73,6 +73,35 @@ const usersPost = async(req, res = response) =>{
     });
 }
 
+
+const usersRegister = async(req, res = response) =>{
+
+    let {nombre, correo, password, rol, img = ''} = req.body;
+    if (!rol){
+        rol = 'Usuario'
+    }
+    const usuario = new Usuario({nombre, correo, password, rol, img});
+
+    // Encriptar contraseña
+    const salt = bcryptjs.genSaltSync();
+    usuario.password = bcryptjs.hashSync(password, salt);
+    const token = await generarJWT(usuario.id); 
+    await usuario.save();
+    
+    const {rol: u_rol, estado, google, nombre: name, img: im, correo: mail, uid} = usuario
+    res.json({
+        rol: u_rol,
+        estado,
+        google, 
+        nombre: name, 
+        correo: mail, 
+        uid,
+        img: im,
+        token,
+        ok: true
+    });
+}
+
 const usersPut = async(req, res = response) =>{
     // Esto para cuando los parametros se los ponemos directos en la ruta
     const {id} = req.params;
@@ -111,6 +140,7 @@ module.exports = {
     usersGet,
     getUserById,
     usersPost,
+    usersRegister,
     usersPut,
     usersDelete
 }

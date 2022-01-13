@@ -6,7 +6,7 @@ const CategoriaSchema = Schema({
         required: [true, 'El nombre es obligatorio'],
         unique: true
     },
-    descripcion: {
+    img: {
         type: String
     },
     estado: {
