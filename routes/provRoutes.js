@@ -8,11 +8,10 @@ const {check} = require('express-validator');
 const {
     validarCampos,
     validarJWT,
-    validarRFC,
     esAdminRole
 } = require('../middlewares')
 
-const {emailExiste, existeProvedorPorId} = require('../helpers/db-validators');
+const {emailExiste, existeProvedorPorId, telefonoUnico, validarRFC} = require('../helpers/db-validators');
 
 const {
     provGet, provPost, provPut, provDelete
@@ -33,10 +32,11 @@ router.put('/:id', [
 router.post('/', [
     check('nombre_contacto', 'El nombre de contacto es obligatorio').not().isEmpty(),
     check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
-    check('telefono', 'El telefono es obligatorio').not().isEmpty().isMobilePhone().custom((t) => telefonoUnico(t,"prov")),
+    check('telefono', 'El teléfono no es válido').isMobilePhone(),
+    check('telefono').custom(t => telefonoUnico(t,"prov")),
     check('correo', 'El correo no es válido').isEmail(),
-    check('correo').custom((c) => emailExiste(c,"prov")),
-    check('rfc', 'El rfc no es válido').custom(validarRFC),
+    check('correo').custom(c => emailExiste(c,"prov")),
+    check('rfc').custom(validarRFC),
     validarCampos
 ], provPost); 
 

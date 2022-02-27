@@ -10,8 +10,21 @@ const esRoleValido = async(rol = '') =>{
 
 // Verificar si el correo es repetido
 const emailExiste = async(correo = '', db_model = "")=>{
-    let db_models = {"user": Usuario, "prov": Proveedor, "cli": Cliente}
-    const existeEmail = await db_models[db_model].findOne({correo: correo});
+    var existeEmail = undefined
+    switch (db_model) {
+        case 'user':
+            existeEmail = await Usuario.findOne({correo: correo})
+            break;
+        case 'prov':
+            existeEmail = await Proveedor.findOne({correo: correo})
+            break;
+        case 'cli':
+            existeEmail = await Cliente.findOne({correo: correo})
+            break;
+        default:
+            break;
+    }
+    
     if(existeEmail){
         throw new Error(`El correo ${correo}, ya está registrado`)
     }
@@ -50,8 +63,17 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) =>{
 }
 
 const telefonoUnico = async(telefono = '', db_model = "") =>{
-    let db_models = {"prov": Proveedor, "cli": Cliente}
-    const existeTelefono = await db_models[db_model].findOne({telefono: telefono})
+    var existeTelefono = undefined
+    switch (db_model) {
+        case "prov":
+            existeTelefono = await Proveedor.findOne({telefono: telefono})
+            break
+        case "cli":
+            existeTelefono = await Cliente.findOne({telefono: telefono})
+            break
+        default:
+            break;
+    }
     if (existeTelefono){
         throw new Error(`El teléfono ${telefono} ya existe`)
     }
@@ -65,6 +87,18 @@ const existeProvedorPorId = async (id) =>{
     }
 }
 
+// Función para validar un RFC México
+// Devuelve el RFC sin espacios ni guiones si es correcto
+// Devuelve false si es inválido
+// (debe estar en mayúsculas, guiones y espacios intermedios opcionales)
+const validarRFC = (rfc)=> {
+    const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
+    var validado = rfc.match(re);
+    if (validado === null)  // Coincide con el formato general del regex?
+        throw new Error(`Rfc no valido`);
+    return true
+}
+
 module.exports ={
     esRoleValido,
     emailExiste,
@@ -73,5 +107,6 @@ module.exports ={
     existeProductoPorId,
     coleccionesPermitidas,
     telefonoUnico,
-    existeProvedorPorId
+    existeProvedorPorId,
+    validarRFC
 } 

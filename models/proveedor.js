@@ -11,12 +11,10 @@ const ProveedorSchema = Schema({
     },
     telefono: {
         type: String,
-        required: [true, 'El teléfono es obligatorio'],
         unique: true
     },
     correo: {
         type: String,
-        required: [true, 'El correo es obligatorio'],
         unique: true
     },
     rfc: {

@@ -37,10 +37,10 @@ const provGet = async(req = request, res = response) =>{
 
 const provPost = async(req, res = response) =>{
 
-    
-
-    const {nombre_contacto, nombre_empresa, telefono, correo, rfc} = req.body;
-    const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefono, correo, rfc});
+    console.log('Entre Post');
+    console.log(req.body);
+    const {nombre_contacto, nombre_empresa, telefono, correo, rfc, direccion} = req.body;
+    const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefono, correo, rfc, direccion});
 
 
     await proveedor.save();
