@@ -54,6 +54,15 @@ const existeProveedorPorId = async (id) =>{
     }
 }
 
+// Verificar si el cliente existe
+const existeClientePorId = async (id) =>{
+    const existeCliente = await Cliente.findById(id);
+    if(!existeCliente){
+        throw new Error(`El id ${id} no existe`)
+    }
+}
+
+
 // Verificar si la categoria existe
 const existeProductoPorId = async (id) =>{
     const existeProducto = await Producto.findById(id);
@@ -108,5 +117,6 @@ module.exports ={
     coleccionesPermitidas,
     telefonoUnico,
     existeProveedorPorId,
+    existeClientePorId,
     validarRFC
 } 

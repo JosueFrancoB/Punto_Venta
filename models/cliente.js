@@ -7,16 +7,14 @@ const ClienteSchema = Schema({
     },
     nombre_empresa: {
         type: String,
-        required: [true, 'El nombre es obligatorio'],
+        required: [true, 'El nombre de la empresa es obligatorio'],
     },
     telefono: {
         type: String,
-        required: [true, 'El teléfono es obligatorio'],
         unique: true
     },
     correo: {
         type: String,
-        required: [true, 'El correo es obligatorio'],
         unique: true
     },
     img: {
@@ -24,7 +22,6 @@ const ClienteSchema = Schema({
     },
     direccion: {
         type: String,
-        unique: true
     },
     estado: {
         type: Boolean,
