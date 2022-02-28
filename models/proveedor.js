@@ -26,7 +26,6 @@ const ProveedorSchema = Schema({
     },
     direccion: {
         type: String,
-        unique: true
     },
     estado: {
         type: Boolean,

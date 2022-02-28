@@ -14,7 +14,7 @@ const {
 const {emailExiste, existeProveedorPorId, telefonoUnico, validarRFC} = require('../helpers/db-validators');
 
 const {
-    provGet,  getProveedorPorID, provPost, provPut, provDelete
+    provGet,  getProveedorPorID, provPost, provPatch, provDelete
 } = require('../controllers/provCtrl');
 
 const router = Router();
@@ -34,7 +34,7 @@ router.put('/:id', [
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProveedorPorId),
     validarCampos
-], provPut);
+], provPatch);
 // Los middleware se mandan en el 2 argumento cuando se quieren agregar y si son varios se mandan con un arreglo
 // en este caso se usan para que validen todos los campos antes de hacer el método post
 router.post('/', [

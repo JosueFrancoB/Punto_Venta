@@ -44,7 +44,6 @@ const getProveedorPorID = async(req, res = response)=>{
     res.json({
         ok:true,
         proveedor,
-        // categoria
     })
 
 }
@@ -64,7 +63,7 @@ const provPost = async(req, res = response) =>{
     });
 }
 
-const provPut = async(req, res = response) =>{
+const provPatch = async(req, res = response) =>{
     // Esto para cuando los parametros se los ponemos directos en la ruta
     const {id} = req.params;
     const {_id, ...resto} = req.body;
@@ -100,6 +99,6 @@ module.exports = {
     provGet,
     getProveedorPorID,
     provPost,
-    provPut,
+    provPatch,
     provDelete
 }
