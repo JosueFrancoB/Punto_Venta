@@ -11,10 +11,10 @@ const {
     esAdminRole
 } = require('../middlewares')
 
-const {emailExiste, existeProvedorPorId, telefonoUnico, validarRFC} = require('../helpers/db-validators');
+const {emailExiste, existeProveedorPorId, telefonoUnico, validarRFC} = require('../helpers/db-validators');
 
 const {
-    provGet, provPost, provPut, provDelete
+    provGet,  getProveedorPorID, provPost, provPut, provDelete
 } = require('../controllers/provCtrl');
 
 const router = Router();
@@ -22,9 +22,17 @@ const router = Router();
 // Solo los dejo con la / porque en el server ya le estoy asignando su ruta
 router.get('/', provGet);
 
+// Obtener un proveedor por id - servicio publico
+router.get('/:id', [
+    check('id', 'No es un id válido').isMongoId(),
+    check('id').custom(existeProveedorPorId),
+    validarCampos
+], getProveedorPorID);
+
+
 router.put('/:id', [
     check('id', 'No es un id válido').isMongoId(),
-    check('id').custom(existeProvedorPorId),
+    check('id').custom(existeProveedorPorId),
     validarCampos
 ], provPut);
 // Los middleware se mandan en el 2 argumento cuando se quieren agregar y si son varios se mandan con un arreglo
@@ -44,7 +52,7 @@ router.delete('/:id', [
     validarJWT,
     esAdminRole,
     check('id', 'No es un id válido').isMongoId(),
-    check('id').custom(existeProvedorPorId),
+    check('id').custom(existeProveedorPorId),
     validarCampos
 ], provDelete)
 

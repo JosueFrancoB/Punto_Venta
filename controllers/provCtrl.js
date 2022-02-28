@@ -35,6 +35,20 @@ const provGet = async(req = request, res = response) =>{
     });
 }
 
+const getProveedorPorID = async(req, res = response)=>{
+    // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
+    const {id} = req.params;
+
+    const proveedor = await Proveedor.findById(id);
+    
+    res.json({
+        ok:true,
+        proveedor,
+        // categoria
+    })
+
+}
+
 const provPost = async(req, res = response) =>{
 
     console.log('Entre Post');
@@ -84,6 +98,7 @@ const provDelete = async(req, res = response) =>{
 
 module.exports = {
     provGet,
+    getProveedorPorID,
     provPost,
     provPut,
     provDelete

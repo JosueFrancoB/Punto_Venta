@@ -46,6 +46,14 @@ const existeCategoriaPorId = async (id) =>{
     }
 }
 
+// Verificar si el proveedor existe
+const existeProveedorPorId = async (id) =>{
+    const existeProveedor = await Proveedor.findById(id);
+    if(!existeProveedor){
+        throw new Error(`El id ${id} no existe`)
+    }
+}
+
 // Verificar si la categoria existe
 const existeProductoPorId = async (id) =>{
     const existeProducto = await Producto.findById(id);
@@ -79,14 +87,6 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
     }
 }
 
-// Verificar si el proveedor existe
-const existeProvedorPorId = async (id) =>{
-    const existeProveedor = await Proveedor.findById(id);
-    if(!existeProveedor){
-        throw new Error(`El id ${id} no existe`)
-    }
-}
-
 // Función para validar un RFC México
 // Devuelve el RFC sin espacios ni guiones si es correcto
 // Devuelve false si es inválido
@@ -107,6 +107,6 @@ module.exports ={
     existeProductoPorId,
     coleccionesPermitidas,
     telefonoUnico,
-    existeProvedorPorId,
+    existeProveedorPorId,
     validarRFC
 } 
