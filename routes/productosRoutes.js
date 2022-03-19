@@ -26,7 +26,7 @@ router.get('/categoria/:id', [
 
 // Crear una Producto - privado cualquier persona con token válido
 router.post('/', [
-    // validarJWT,
+    validarJWT,
     check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
     check('categoria', 'No es un id válido').isMongoId(),
     check('categoria').custom(existeCategoriaPorId),
@@ -34,8 +34,9 @@ router.post('/', [
 ], crearProducto);
 
 // Actualizar - privado cualquier persona con token válido
-router.put('/:id', [
+router.patch('/:id', [
     validarJWT,
+    check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProductoPorId),
     validarCampos
@@ -45,6 +46,7 @@ router.put('/:id', [
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
+    check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProductoPorId),
     validarCampos

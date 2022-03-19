@@ -96,13 +96,11 @@ const getProductosPorCategoria = async(req, res = response)=>{
 
 const updateProducto = async(req, res = response)=>{
     const {id} = req.params;
-    const {estado, usuario, ...data} = req.body;
-    
+    const {estado, categoria, ...data} = req.body;
     if(data.nombre){
         data.nombre = data.nombre.toUpperCase();
     }
 
-    data.usuario = req.usuario._id;
     // lo de new: true nada más es para que en la variable Producto se guarde ya actualizado y verlo en la respuesta
     const producto = await Producto.findByIdAndUpdate(id, data, {new: true});
 
