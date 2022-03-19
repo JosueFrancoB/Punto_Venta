@@ -10,7 +10,7 @@ const provGet = async(req = request, res = response) =>{
     // const {nombre, apikey, page = 1, limit} = req.query;
 
     // Puedo mandar el limite de pagina en el query (en la url), y si no por defecto es 5 url?limite=5
-    const {limite = 5, desde = 0} = req.query;
+    const {limite = 15, desde = 0} = req.query;
     const query = {estado: true};
     // con number lo convertimos porque viene en string
     // le ponemos que solo me traiga los que no esten borrados osea que tengan el estado true
@@ -52,8 +52,8 @@ const provPost = async(req, res = response) =>{
 
     console.log('Entre Post');
     console.log(req.body);
-    const {nombre_contacto, nombre_empresa, telefono, correo, rfc, direccion} = req.body;
-    const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefono, correo, rfc, direccion});
+    const {nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones} = req.body;
+    const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones});
 
 
     await proveedor.save();

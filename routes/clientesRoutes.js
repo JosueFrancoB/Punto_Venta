@@ -36,10 +36,10 @@ router.patch('/:id', [
 router.post('/', [
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
-    check('telefono', 'El teléfono no es válido').isMobilePhone(),
-    check('telefono').custom(t => telefonoUnico(t,"cli")),
-    check('correo', 'El correo no es válido').isEmail(),
-    check('correo').custom(c => emailExiste(c,"cli")),
+    check('telefonos.*', 'El teléfono no es válido').isMobilePhone(),
+    check('telefonos.*').custom(t => telefonoUnico(t,"cli")),
+    check('correos.*', 'El correo no es válido').isEmail(),
+    check('correos.*').custom(c => emailExiste(c,"cli")),
     validarCampos
 ], clientsPost); 
 

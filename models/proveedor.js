@@ -9,13 +9,13 @@ const ProveedorSchema = Schema({
         type: String,
         required: [true, 'El nombre de la empresa es obligatorio'],
     },
-    telefono: {
-        type: String,
-        unique: true
+    telefonos: {
+        type: [String],
+        default: []
     },
-    correo: {
-        type: String,
-        unique: true
+    correos: {
+        type: [String],
+        default: []
     },
     rfc: {
         type: String,
@@ -24,8 +24,9 @@ const ProveedorSchema = Schema({
     img: {
         type: String
     },
-    direccion: {
-        type: String,
+    direcciones: {
+        type: [String],
+        default: []
     },
     estado: {
         type: Boolean,

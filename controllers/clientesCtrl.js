@@ -9,8 +9,8 @@ const clientsGet = async(req = request, res = response) =>{
     // Asigno page 1 por defecto en caso de que no manden ese argumento
     // const {nombre, apikey, page = 1, limit} = req.query;
 
-    // Puedo mandar el limite de pagina en el query (en la url), y si no por defecto es 5 url?limite=5
-    const {limite = 5, desde = 0} = req.query;
+    // Puedo mandar el limite de pagina en el query (en la url), y si no por defecto es 15 url?limite=15
+    const {limite = 15, desde = 0} = req.query;
     const query = {estado: true};
     // con number lo convertimos porque viene en string
     // le ponemos que solo me traiga los que no esten borrados osea que tengan el estado true
@@ -52,8 +52,8 @@ const clientsPost = async(req, res = response) =>{
 
     console.log('Entre clients Post');
     console.log(req.body);
-    const {nombre, nombre_empresa, telefono, correo, direccion} = req.body;
-    const cliente = new Cliente({nombre, nombre_empresa, telefono, correo, direccion});
+    const {nombre, nombre_empresa, telefonos, correos, direcciones} = req.body;
+    const cliente = new Cliente({nombre, nombre_empresa, telefonos, correos, direcciones});
 
 
     await cliente.save();
