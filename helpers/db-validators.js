@@ -13,13 +13,13 @@ const emailExiste = async(correo = '', db_model = "")=>{
     var existeEmail = undefined
     switch (db_model) {
         case 'user':
-            existeEmail = await Usuario.findOne({correo: correo})
+            existeEmail = await Usuario.findOne({correos: correo})
             break;
         case 'prov':
-            existeEmail = await Proveedor.findOne({correo: correo})
+            existeEmail = await Proveedor.findOne({correos: correo})
             break;
         case 'cli':
-            existeEmail = await Cliente.findOne({correo: correo})
+            existeEmail = await Cliente.findOne({correos: correo})
             break;
         default:
             break;
@@ -83,10 +83,10 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
     var existeTelefono = undefined
     switch (db_model) {
         case "prov":
-            existeTelefono = await Proveedor.findOne({telefono: telefono})
+            existeTelefono = await Proveedor.findOne({telefonos: telefono})
             break
         case "cli":
-            existeTelefono = await Cliente.findOne({telefono: telefono})
+            existeTelefono = await Cliente.findOne({telefonos: telefono})
             break
         default:
             break;
@@ -94,6 +94,7 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
     if (existeTelefono){
         throw new Error(`El teléfono ${telefono} ya existe`)
     }
+    return true;
 }
 
 // Función para validar un RFC México
