@@ -1,30 +1,49 @@
 const {Schema, model} = require('mongoose');
 
-const VentaSchema = Schema({
-    cliente: {
-        type: Schema.Types.ObjectId,
-        ref: 'Cliente',
-        required: true
-    },
-    usuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        required: true
-    },
+
+const VentaSchema = new Schema({
+
     fecha: {
-        type: Date,
+        type: Date
     },
-    total_pagar: {
+    codigo:{
+        type: String
+    },
+    total_a_pagar:{
+        type: Number
+    },
+    iva:{
         type: Number,
+        default: 0
+    },
+    descuento:{
+        type: Number,
+        default: 0
+    },
+    productos:[{
+        id_producto: Schema.Types.ObjectId,
+        nombre: String,
+        precio: Number,
+        cantidad: Number,
+    }],
+    cliente:{
+        id_cliente: Schema.Types.ObjectId,
+        nombre: String,
+        apellido: String,
+    },
+    usuario_venta:{
+        id_usuario: Schema.Types.ObjectId,
+        nombre: String,
+        apellido: String,
+    },
+    estado:{
+        type: Boolean,
+        default: true
+    },
+    cancelada:{
+        type: Boolean,
+        default: false
     }
 });
-
-VentaSchema.methods.toJSON = function (){
-    
-    // Convierto el schema a un objeto de javascript con this.toObject
-    const { __v, estado, ...data } = this.toObject();
-    // saco el _v y el estado para no mostrarlos
-    return data;
-}
 
 module.exports = model('Venta', VentaSchema);
