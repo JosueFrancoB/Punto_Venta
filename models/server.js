@@ -24,7 +24,8 @@ class Server{
             productos: '/productos',
             uploads: '/uploads',
             users: '/users',
-            providers: '/providers'
+            providers: '/providers',
+            sales: '/sales'
         }
 
         //Midlewares
@@ -77,6 +78,7 @@ class Server{
         this.app.use(this.rutas.uploads,   require('../routes/uploadsRoutes'));
         this.app.use(this.rutas.users,     require('../routes/usersRoutes'));
         this.app.use(this.rutas.providers, require('../routes/provRoutes'));
+        this.app.use(this.rutas.sales,     require('../routes/salesRoutes'));
     }
 
     listen(){
