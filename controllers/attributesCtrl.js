@@ -1,4 +1,7 @@
-const { response, request } = require("express");
+const {
+    response,
+    request
+} = require("express");
 // Models
 const city = require('../models/city');
 const state = require('../models/state');
@@ -7,68 +10,82 @@ const Unit = require('../models/unit');
 
 
 // Get cities by state 
-const get_cities = async( req, res = response ) => {
+const get_cities = async (req, res = response) => {
 
     try { // If there is error
 
         // Variables to receive (views and order)
-        let { order = 'asc', order_field = 'name', search = '' } = req.query;
-        let { limit = 10, from = 0 } = req.query;
-        let query = { id_state: req.state.id };
+        let {
+            order = 'asc', order_field = 'name', search = ''
+        } = req.query;
+        let {
+            limit = 10, from = 0
+        } = req.query;
+        let query = {
+            id_state: req.state.id
+        };
 
         // Check allowed fields
         const search_fields = ['name'];
-        const include_field = search_fields.includes( order_field );
-        if ( !include_field ){ // Conditional if field cannot be permited
+        const include_field = search_fields.includes(order_field);
+        if (!include_field) { // Conditional if field cannot be permited
             return res.status(404).json({ // ERROR allowed fields
                 msg: `The field sort is not allowed: allowed fields '${ search_fields }'`,
                 msg_es: `El campo a ordenar no es permitido: campos permitidos '${ search_fields }'`
             });
         }
-        
+
         // If there's not limit
-        if ( limit == 'NO' || limit == 'No' || limit == 'no') {
+        if (limit == 'NO' || limit == 'No' || limit == 'no') {
             limit = '';
         }
 
         // Conditional for ordering (asc o desc)
-        order = order == 'desc' ? -1 : 1; 
+        order = order == 'desc' ? -1 : 1;
 
         // Function for order (field and order)
-        const sort = { [order_field]: order };
+        const sort = {
+            [order_field]: order
+        };
 
-        if ( search !== '' ){
-            
+        if (search !== '') {
+
             // Check if the search term is an id
-            const is_mongoid = ObjectId.isValid( search ); // TRUE
+            const is_mongoid = ObjectId.isValid(search); // TRUE
 
             // Search if the term is an id
-            if ( is_mongoid ){
-                const city_id = await city.findById( search );
+            if (is_mongoid) {
+                const city_id = await city.findById(search);
 
                 return res.status(200).json({ // Response in JSON format
-                    cities: ( city_id ) ? [ city_id ] : []
+                    cities: (city_id) ? [city_id] : []
                 });
             }
 
             // Search by term
-            search = await regexp_search_string( search );
-            const regex = new RegExp( search, 'i' );
-            query = { 
-                $or: [ { name: regex }],
-                $and: [ { id_state: req.state.id } ]
+            search = await regexp_search_string(search);
+            const regex = new RegExp(search, 'i');
+            query = {
+                $or: [{
+                    name: regex
+                }],
+                $and: [{
+                    id_state: req.state.id
+                }]
             };
-            
+
         }
 
-        const [ total, cities ] = await Promise.all([
-            city.countDocuments(query), 
+        const [total, cities] = await Promise.all([
+            city.countDocuments(query),
             city.find(query)
-                .collation({  locale: 'en' })
-                .populate('state', 'name')
-                .sort(sort)
-                .skip(Number(from))
-                .limit(Number(limit))
+            .collation({
+                locale: 'en'
+            })
+            .populate('state', 'name')
+            .sort(sort)
+            .skip(Number(from))
+            .limit(Number(limit))
         ]);
 
         // Response in JSON format
@@ -77,7 +94,7 @@ const get_cities = async( req, res = response ) => {
             cities
         });
 
-    } catch(err) {
+    } catch (err) {
 
         console.log(err);
         return res.status(500).json({ // Error message
@@ -90,19 +107,25 @@ const get_cities = async( req, res = response ) => {
 }
 
 // Get states by country
-const get_states = async( req, res = response ) => {
+const get_states = async (req, res = response) => {
 
     try { // If there is error
 
         // Variables to receive (views and order)
-        let { order = 'asc', order_field = 'name', search = '' } = req.query;
-        let { limit = 10, from = 0 } = req.query;
-        let query = { id_country: req.country.id };
+        let {
+            order = 'asc', order_field = 'name', search = ''
+        } = req.query;
+        let {
+            limit = 10, from = 0
+        } = req.query;
+        let query = {
+            id_country: req.country.id
+        };
 
         // Check allowed fields
         const search_fields = ['name'];
-        const include_field = search_fields.includes( order_field );
-        if ( !include_field ) { // Conditional if field cannot be permited
+        const include_field = search_fields.includes(order_field);
+        if (!include_field) { // Conditional if field cannot be permited
             return res.status(400).json({ // ERROR allowed fields
                 msg: `The field sort is not allowed: allowed fields '${ search_fields }'`,
                 msg_es: `El campo a ordenar no es permitido: campos permitidos '${ search_fields }'`
@@ -110,47 +133,55 @@ const get_states = async( req, res = response ) => {
         }
 
         // If there's not limit
-        if ( limit == 'NO' || limit == 'No' || limit == 'no') {
+        if (limit == 'NO' || limit == 'No' || limit == 'no') {
             limit = '';
         }
 
         // Conditional for ordering (asc o desc)
-        order = order == 'desc' ? -1 : 1; 
+        order = order == 'desc' ? -1 : 1;
 
         // Function for order (field and order)
-        const sort = { [order_field]: order };
+        const sort = {
+            [order_field]: order
+        };
 
-        if ( search !== '' ){
-            
+        if (search !== '') {
+
             // Check if the search term is an id
-            const is_mongoid = ObjectId.isValid( search ); // TRUE
+            const is_mongoid = ObjectId.isValid(search); // TRUE
 
             // Search if the term is an id
-            if ( is_mongoid ){
-                const state_id = await state.findById( search );
+            if (is_mongoid) {
+                const state_id = await state.findById(search);
 
                 return res.status(200).json({ // Response in JSON format
-                    states: ( state_id ) ? [ state_id ] : []
+                    states: (state_id) ? [state_id] : []
                 });
             }
 
             // Search by term
-            search = await regexp_search_string( search );
-            const regex = new RegExp( search, 'i' );
-            query = { 
-                $or: [ { name: regex } ],
-                $and: [ { id_country: req.country.id } ]
+            search = await regexp_search_string(search);
+            const regex = new RegExp(search, 'i');
+            query = {
+                $or: [{
+                    name: regex
+                }],
+                $and: [{
+                    id_country: req.country.id
+                }]
             };
         }
 
-        const [ total, states ] = await Promise.all([
-            state.countDocuments(query), 
+        const [total, states] = await Promise.all([
+            state.countDocuments(query),
             state.find(query)
-                .collation({  locale: 'en' })
-                .populate('country', 'name')
-                .sort(sort)
-                .skip(Number(from))
-                .limit(Number(limit))
+            .collation({
+                locale: 'en'
+            })
+            .populate('country', 'name')
+            .sort(sort)
+            .skip(Number(from))
+            .limit(Number(limit))
         ]);
 
         // Response in JSON format
@@ -159,7 +190,7 @@ const get_states = async( req, res = response ) => {
             states
         });
 
-    } catch(err) {
+    } catch (err) {
 
         console.log(err);
         return res.status(500).json({ // Error message
@@ -172,19 +203,23 @@ const get_states = async( req, res = response ) => {
 }
 
 // Get countries 
-const get_countries = async( req, res = response ) => {
+const get_countries = async (req, res = response) => {
 
     try { // If there is error
-        
+
         // Variables to receive (views and order)
-        let { order = 'asc', order_field = 'name', search = '' } = req.query;
-        let { limit = 10, from = 0 } = req.query;
+        let {
+            order = 'asc', order_field = 'name', search = ''
+        } = req.query;
+        let {
+            limit = 10, from = 0
+        } = req.query;
         let query = {};
 
         // Check allowed fields
         const search_fields = ['name'];
-        const include_field = search_fields.includes( order_field );
-        if ( !include_field ){ // Conditional if field cannot be permited
+        const include_field = search_fields.includes(order_field);
+        if (!include_field) { // Conditional if field cannot be permited
             // Disonnect to DB
             mongo_get_countries.close(); // Close connection to database
 
@@ -195,44 +230,50 @@ const get_countries = async( req, res = response ) => {
         }
 
         // If there's not limit
-        if ( limit == 'NO' || limit == 'No' || limit == 'no') {
+        if (limit == 'NO' || limit == 'No' || limit == 'no') {
             limit = '';
         }
 
         // Conditional for ordering (asc o desc)
-        order = order == 'desc' ? -1 : 1; 
+        order = order == 'desc' ? -1 : 1;
 
         // Function for order (field and order)
-        const sort = { [order_field]: order };
+        const sort = {
+            [order_field]: order
+        };
 
-        if ( search !== '' ){ 
+        if (search !== '') {
 
             // Check if the search term is an id
-            const is_mongoid = ObjectId.isValid( search ); // TRUE
+            const is_mongoid = ObjectId.isValid(search); // TRUE
 
             // Search if the term is an id
-            if ( is_mongoid ){
-                const country_id = await country.findById( search );
+            if (is_mongoid) {
+                const country_id = await country.findById(search);
 
                 return res.status(200).json({ // Response in JSON format
-                    countries: ( country_id ) ? [ country_id ] : []
+                    countries: (country_id) ? [country_id] : []
                 });
             }
 
             // Search by term
-            search = await regexp_search_string( search );
-            const regex = new RegExp( search, 'i' );
-            query = { name: regex };
+            search = await regexp_search_string(search);
+            const regex = new RegExp(search, 'i');
+            query = {
+                name: regex
+            };
 
         }
 
-        const [ total, countries ] = await Promise.all([
-            country.countDocuments(query), 
+        const [total, countries] = await Promise.all([
+            country.countDocuments(query),
             country.find(query)
-                .collation({  locale: 'en' })       
-                .sort(sort)
-                .skip(Number(from))
-                .limit(Number(limit))
+            .collation({
+                locale: 'en'
+            })
+            .sort(sort)
+            .skip(Number(from))
+            .limit(Number(limit))
         ]);
 
         // Response in JSON format
@@ -241,7 +282,7 @@ const get_countries = async( req, res = response ) => {
             countries
         });
 
-    } catch(err) {
+    } catch (err) {
 
         console.log(err);
         return res.status(500).json({ // Error message
@@ -250,20 +291,24 @@ const get_countries = async( req, res = response ) => {
         });
 
     }
-    
+
 }
 
 
 // Se les igualo req = request para que me aparezcan las opciones y ayudas de vscode
-const unitsGet = async(req = request, res = response) =>{
+const unitsGet = async (req = request, res = response) => {
 
     // Para las peticiones con esto  ?q=hola&nombre=josu&apikey=8212&page=3&limite=10
     // Asigno page 1 por defecto en caso de que no manden ese argumento
     // const {nombre, apikey, page = 1, limit} = req.query;
 
     // Puedo mandar el limite de pagina en el query (en la url), y si no por defecto es 15 url?limite=15
-    const {limite = 15, desde = 0} = req.query;
-    const query = {estado: true};
+    const {
+        limite = 15, desde = 0
+    } = req.query;
+    const query = {
+        estado: true
+    };
     // con number lo convertimos porque viene en string
     // le ponemos que solo me traiga los que no esten borrados osea que tengan el estado true
     // const usuarios = await Usuario.find({estado: true})
@@ -273,7 +318,7 @@ const unitsGet = async(req = request, res = response) =>{
     // const total = Usuario.countDocuments({estado: true});
 
     // En lugar de lo anterior de está manera las 2 promesas se ejecutan al mismo tiempo y hasta que esten las 2 estén se continua con lo demás
-    const [total, units] = await Promise.all([
+    const [total, unidades] = await Promise.all([
         Unit.countDocuments(query),
         Unit.find(query)
         .skip(Number(desde))
@@ -283,64 +328,81 @@ const unitsGet = async(req = request, res = response) =>{
     res.json({
         ok: true,
         total,
-        units
+        unidades
     });
 }
 
-const getUnitPorID = async(req, res = response)=>{
+const getUnitPorID = async (req, res = response) => {
     // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
-    const {id} = req.params;
+    const {
+        id
+    } = req.params;
 
-    const unit = await Unit.findById(id);
-    
+    const unidad = await Unit.findById(id);
+
     res.json({
-        ok:true,
-        unit
+        ok: true,
+        unidad
     })
 
 }
 
-const unitsPost = async(req, res = response) =>{
+const unitsPost = async (req, res = response) => {
 
     console.log('Entre units Post');
     console.log(req.body);
-    const {nombre, abreviacion} = req.body;
-    const unit = new Unit({nombre, abreviacion});
+    const {
+        nombre,
+        abreviacion
+    } = req.body;
+    const unidad = new Unit({
+        nombre,
+        abreviacion
+    });
 
 
-    await unit.save();
+    await unidad.save();
     res.json({
         ok: true,
-        unit
+        unidad
     });
 }
 
-const unitsPatch = async(req, res = response) =>{
+const unitsPatch = async (req, res = response) => {
     // Esto para cuando los parametros se los ponemos directos en la ruta
-    const {id} = req.params;
-    const {_id, ...resto} = req.body;
+    const {
+        id
+    } = req.params;
+    const {
+        _id,
+        ...resto
+    } = req.body;
 
-    const unit = await Unit.findByIdAndUpdate(id, resto);
+    const unidad = await Unit.findByIdAndUpdate(id, resto);
 
     res.json({
         ok: true,
-        unit
+        unidad
     });
 }
 
-const unitsDelete = async(req, res = response) =>{
+const unitsDelete = async (req, res = response) => {
 
-    const {id} = req.params;
+    const {
+        id
+    } = req.params;
 
     // Borrarlo fisicamente
     // const unidad = await Usuario.findByIdAndDelete(id);
 
     // Borrarlo solo para la vista
-    const unit = await Unit.findByIdAndUpdate(id, {estado: false});
+    const unidad = await Unit.findByIdAndUpdate(id, {
+        estado: false
+    });
 
     res.json({
         ok: true,
-        unit
+        unidad
     });
 }
 

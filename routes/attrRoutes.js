@@ -1,32 +1,60 @@
 // External libreries
-const { Router } = require('express');
-const { check } = require('express-validator'); 
+const {
+    Router
+} = require('express');
+const {
+    check
+} = require('express-validator');
 
 // Internal requirements (functions)
-const { validarCampos, validarJWT } = require('../middlewares');
-const { get_cities, get_states, get_countries, unitsGet, getUnitPorID, unitsPost, unitsPatch, unitsDelete} = require('../controllers/attributesCtrl');
-const { exists_state_by_id, validator_state, exists_country_by_id, validator_country,  exists_unit_by_id } = require('../helpers/valid-attributes');
+const {
+    validarCampos,
+    validarJWT
+} = require('../middlewares');
+const {
+    get_cities,
+    get_states,
+    get_countries,
+    unitsGet,
+    getUnitPorID,
+    unitsPost,
+    unitsPatch,
+    unitsDelete
+} = require('../controllers/attributesCtrl');
+const {
+    exists_state_by_id,
+    validator_state,
+    exists_country_by_id,
+    validator_country,
+    exists_unit_by_id
+} = require('../helpers/valid-attributes');
 
 const router = Router();
 
 /* {{url}}/cities */
 // Get cities by state - private
-router.get('/city/:state_id',[
+router.get('/city/:state_id', [
     validarJWT,
-    check('state_id', { msg: 'Mongo id is not valid', msg_es: 'No es un id de Mongo válido'}).isMongoId(),
+    check('state_id', {
+        msg: 'Mongo id is not valid',
+        msg_es: 'No es un id de Mongo válido'
+    }).isMongoId(),
     validarCampos,
-    check('state_id').custom( exists_state_by_id ),
+    check('state_id').custom(exists_state_by_id),
     validarCampos,
     validator_state
-], get_cities );
+], get_cities);
 
 /* {{url}}/states */
 // Get states by country - private
-router.get('/state/:country_id',[
+router.get('/state/:country_id', [
     validarJWT,
-    check('country_id', { msg: 'Mongo id is not valid', msg_es: 'No es un id de Mongo válido'}).isMongoId(),
+    check('country_id', {
+        msg: 'Mongo id is not valid',
+        msg_es: 'No es un id de Mongo válido'
+    }).isMongoId(),
     validarCampos,
-    check('country_id').custom( exists_country_by_id ),
+    check('country_id').custom(exists_country_by_id),
     validarCampos,
     validator_country
 ], get_states);
@@ -34,48 +62,60 @@ router.get('/state/:country_id',[
 // Get countries
 router.get('/countries', [
     validarJWT
-], get_countries );
+], get_countries);
 
 
 /* {{url}}/units */
 // Create unit - private
-router.post('/unit', [ 
+router.post('/units', [
     validarJWT,
-    check('name', { msg: 'Unit name is required', msg_es: 'El nombre de la unidad es obligatorio'}).not().isEmpty(),
+    check('nombre', {
+        msg: 'Unit name is required',
+        msg_es: 'El nombre de la unidad es obligatorio'
+    }).not().isEmpty(),
     validarCampos
-], unitsPost );
+], unitsPost);
 
 // Get units - private
 router.get('/units', [
     validarJWT
-], unitsGet );
+], unitsGet);
 
 // Get unit by id - private
 router.get('/units/:id', [
     validarJWT,
-    check('id', { msg: 'Mongo id is not valid', msg_es: 'No es un id de Mongo válido' }).isMongoId(),
+    check('id', {
+        msg: 'Mongo id is not valid',
+        msg_es: 'No es un id de Mongo válido'
+    }).isMongoId(),
     validarCampos,
-    check('id').custom( exists_unit_by_id ),
+    check('id').custom(exists_unit_by_id),
     validarCampos
-], getUnitPorID );
+], getUnitPorID);
 
 // Update unit by id - private
-router.patch('/unit/:id', [
+router.patch('/units/:id', [
     validarJWT,
-    check('id', { msg: 'Mongo id is not valid', msg_es: 'No es un id de Mongo válido' }).isMongoId(),
+    check('id', {
+        msg: 'Mongo id is not valid',
+        msg_es: 'No es un id de Mongo válido'
+    }).isMongoId(),
     validarCampos,
-    check('id').custom( exists_unit_by_id ),
+    check('id').custom(exists_unit_by_id),
     validarCampos
-], unitsPatch );
+], unitsPatch);
 
 // Delete unit by id - private
-router.delete('/unit/:id', [
+router.delete('/units/:id', [
     validarJWT,
-    check('id', { msg: 'Mongo id is not valid', msg_es: 'No es un id de Mongo válido' }).isMongoId(),
+    check('id', {
+        msg: 'Mongo id is not valid',
+        msg_es: 'No es un id de Mongo válido'
+    }).isMongoId(),
     validarCampos,
-    check('id').custom( exists_unit_by_id ),
+    check('id').custom(exists_unit_by_id),
     validarCampos
-], unitsDelete );
+], unitsDelete);
 
 // Routes export
 module.exports = router;
