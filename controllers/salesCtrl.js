@@ -36,7 +36,7 @@ const getSaleById = async (req, res) => {
         });
     }
 
-    const venta = await Venta.findById(id)
+    const venta = await Venta.findById(id);
     if(!venta){
         return res.json({
             ok: false,
@@ -68,7 +68,8 @@ const createSale = async (req, res) => {
         fecha,
         estado: true,
         cancelada: false
-    }
+    };
+
     try{
 
         // Reducir stock de productos
@@ -90,7 +91,7 @@ const createSale = async (req, res) => {
         });
     }
 
-}
+};
 
 const updateSale = async (req, res) => {
 
@@ -121,7 +122,7 @@ const updateSale = async (req, res) => {
             error: error.message
         });
     }
-}
+};
 
 const deleteSale = async (req, res) => {
 
