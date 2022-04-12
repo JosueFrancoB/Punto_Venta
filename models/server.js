@@ -26,7 +26,8 @@ class Server{
             users: '/users',
             providers: '/providers',
             clients: '/clientes',
-            attributes: '/attributes'
+            attributes: '/attributes',
+            sales: '/sales'
         }
 
         //Midlewares
@@ -80,7 +81,9 @@ class Server{
         this.app.use(this.rutas.users,     require('../routes/usersRoutes'));
         this.app.use(this.rutas.providers, require('../routes/provRoutes'));
         this.app.use(this.rutas.clients, require('../routes/clientesRoutes'));
+        this.app.use(this.rutas.clients, require('../routes/clientesRoutes'));
         this.app.use(this.rutas.attributes, require('../routes/attrRoutes'));
+        this.app.use(this.rutas.sales,     require('../routes/salesRoutes'));
     }
 
     listen(){
