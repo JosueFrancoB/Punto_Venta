@@ -1,26 +1,32 @@
 const { response } = require("express");
-const {Producto} = require("../models");
+const {Producto, Categoria} = require("../models");
 
 
 const crearProducto = async(req, res = response)=>{
 
     const {estado, ...body} = req.body;
 
-    const productoDB = await Producto.findOne({nombre: body.nombre});
-
-    if(productoDB){
+    const productoDB = await Producto.find({nombre: body.nombre.toUpperCase()});
+    if(productoDB.length > 0){
         res.status(400).json({
             ok: false,
-            msg: `El producto ${productoDB.nombre} ya existe`
-        })
+            msg: `El producto ${body.nombre} ya existe`
+        });
     }
+
+    const key_repeated = await Producto.find({clave: body.clave});
+    if(key_repeated.length > 0) res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+
+    const altern_key = await Producto.find({clave_alterna: body.clave_alterna});
+    if(altern_key.length > 0) res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+
 
     // Generar data a guardar
 
     const data = {
         ...body,
         nombre: body.nombre.toUpperCase(),
-    }
+    };
 
     const producto = new Producto(data);
 
@@ -31,15 +37,15 @@ const crearProducto = async(req, res = response)=>{
     res.status(201).json({
         ok: true,
         producto
-    })
+    });
 
-}
+};
 
 const ProductosGet = async(req, res = response)=>{
     const {limite = 10, desde = 0, category = ''} = req.query;
     const query = {estado: true};
     if (category != ''){
-        query.categoria = category
+        query.categoria = category;
     }
 
     const [total, productos] = await Promise.all([

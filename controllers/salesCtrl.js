@@ -2,6 +2,7 @@ const {response, request} = require('express');
 const mongoose = require('mongoose');
 
 const Venta = require('../models/venta');
+const Producto = require('../models/producto');
 
 
 const getSales = async (req, res) => {
@@ -69,6 +70,9 @@ const createSale = async (req, res) => {
         cancelada: false
     }
     try{
+
+        // Reducir stock de productos
+        reduceFromStock(data.productos);
         const venta = new Venta(data);
         await venta.save();
 
@@ -148,7 +152,7 @@ const deleteSale = async (req, res) => {
             error: error.message
         });
     }
-}
+};
 
 const cancelSale = async (req, res) => {
 
@@ -180,7 +184,17 @@ const cancelSale = async (req, res) => {
         });
     }
     
-}
+};
+
+const reduceFromStock = async (products) => {
+    products.forEach(async (product) => {
+        const {existencias} = await Producto.findById(product.id_producto);
+        let new_stock = 0;
+        if (existencias - product.cantidad > 0) new_stock = existencias - product.cantidad;
+        
+        await Producto.findByIdAndUpdate(product.id_producto, {existencias: new_stock});
+    });
+};  
 
 module.exports = {
     getSales,
@@ -189,4 +203,4 @@ module.exports = {
     updateSale,
     deleteSale,
     cancelSale
-}
+};
