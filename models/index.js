@@ -3,7 +3,7 @@ const Producto = require('./producto');
 const Role = require('./role');
 const Server = require('./server');
 const Usuario = require('./usuario');
-const Provedor = require('./proveedor');
+const Proveedor = require('./proveedor');
 const Cliente = require('./cliente');
 const Entrada = require('./entrada');
 const DetEntrada = require('./detalle_entrada');
@@ -17,7 +17,7 @@ module.exports = {
     Role,
     Server,
     Usuario,
-    Provedor,
+    Proveedor,
     Cliente,
     Entrada,
     DetEntrada,
