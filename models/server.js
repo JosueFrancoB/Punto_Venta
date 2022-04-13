@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { dbConnection, crearRoles } = require('../db/config');
@@ -28,16 +28,17 @@ class Server{
             clients: '/clientes',
             attributes: '/attributes',
             sales: '/sales',
-            purchases: '/purchases'
-        }
+            purchases: '/purchases',
+            finances: '/finances'
+        };
 
         //Midlewares
         this.middlewares();
         // Conectarse a db
-        this.conectarDB()
+        this.conectarDB();
 
          //Crea roles en la db que se especifican en el archivo config.json
-        this.dbRoles()
+        this.dbRoles();
 
         // rutas
         this.routes();
@@ -51,7 +52,7 @@ class Server{
     }
 
     async dbRoles(){
-        await crearRoles()
+        await crearRoles();
     }
 
     middlewares(){
@@ -86,12 +87,13 @@ class Server{
         this.app.use(this.rutas.attributes, require('../routes/attrRoutes'));
         this.app.use(this.rutas.sales,     require('../routes/salesRoutes'));
         this.app.use(this.rutas.purchases, require('../routes/comprasRoutes'));
+        this.app.use(this.rutas.finances, require('../routes/financesRoutes'));
     }
 
     listen(){
         this.app.listen(this.port, ()=>{
             console.log('Server corriendo en', this.port);
-        })
+        });
     }
 
 }

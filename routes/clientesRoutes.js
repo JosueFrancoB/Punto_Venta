@@ -5,13 +5,13 @@ const {
     validarCampos,
     validarJWT,
     esAdminRole
-} = require('../middlewares')
+} = require('../middlewares');
 
 const {emailExiste, existeClientePorId, telefonoUnico} = require('../helpers/db-validators');
 
 const {
     clientsGet,  getClientePorID, clientsPost, clientsPatch, clientsDelete
-} = require('../controllers/clientesCtrl');
+} = require('../controllers/customersCtrl');
 
 const router = Router();
 

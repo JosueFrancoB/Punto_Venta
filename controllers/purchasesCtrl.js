@@ -168,7 +168,7 @@ const increaseStock = async (productos) => {
         const new_stock = existencias + producto.cantidad;
         await Producto.findByIdAndUpdate(producto.id_producto, {existencias: new_stock});
     });
-}
+};
 
 
 module.exports = {
