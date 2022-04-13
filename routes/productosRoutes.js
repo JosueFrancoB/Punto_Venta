@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const {check} = require('express-validator');
-const { crearProducto, ProductosGet, getProductoPorID, getProductosPorCategoria, updateProducto, deleteProducto } = require('../controllers/productosCtrl');
+const { crearProducto, ProductosGet, getProductoPorID, getProductosPorCategoria, updateProducto, deleteProducto } = require('../controllers/productsCtrl');
 const { existeProductoPorId, existeCategoriaPorId } = require('../helpers/db-validators');
 const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 

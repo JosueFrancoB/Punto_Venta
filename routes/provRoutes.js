@@ -9,20 +9,18 @@ const {
     validarCampos,
     validarJWT,
     esAdminRole
-} = require('../middlewares')
+} = require('../middlewares');
 
 const {emailExiste, existeProveedorPorId, telefonoUnico, validarRFC} = require('../helpers/db-validators');
 
 const {
     provGet,  getProveedorPorID, provPost, provPatch, provDelete
-} = require('../controllers/provCtrl');
+} = require('../controllers/suppliersCtrl');
 
 const router = Router();
 
-// Solo los dejo con la / porque en el server ya le estoy asignando su ruta
 router.get('/', provGet);
 
-// Obtener un proveedor por id - servicio publico
 router.get('/:id', [
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProveedorPorId),
@@ -35,8 +33,8 @@ router.patch('/:id', [
     check('id').custom(existeProveedorPorId),
     validarCampos
 ], provPatch);
-// Los middleware se mandan en el 2 argumento cuando se quieren agregar y si son varios se mandan con un arreglo
-// en este caso se usan para que validen todos los campos antes de hacer el método post
+
+
 router.post('/', [
     check('nombre_contacto', 'El nombre de contacto es obligatorio').not().isEmpty(),
     check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
@@ -48,13 +46,14 @@ router.post('/', [
     validarCampos
 ], provPost); 
 
+
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProveedorPorId),
     validarCampos
-], provDelete)
+], provDelete);
 
 
 module.exports = router;
