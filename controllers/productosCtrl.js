@@ -8,17 +8,16 @@ const crearProducto = async(req, res = response)=>{
 
     const productoDB = await Producto.find({nombre: body.nombre.toUpperCase()});
     if(productoDB.length > 0){
-        res.status(400).json({
+        return res.status(400).json({
             ok: false,
             msg: `El producto ${body.nombre} ya existe`
         });
     }
-
     const key_repeated = await Producto.find({clave: body.clave});
-    if(key_repeated.length > 0) res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+    if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
 
     const altern_key = await Producto.find({clave_alterna: body.clave_alterna});
-    if(altern_key.length > 0) res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+    if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
 
 
     // Generar data a guardar
@@ -107,6 +106,17 @@ const updateProducto = async(req, res = response)=>{
         data.nombre = data.nombre.toUpperCase();
     }
 
+    const productoDB = await Producto.find({nombre: data.nombre});
+    if(productoDB.length > 0) 
+        return res.status(400).json({
+            ok: false, msg: `El producto ${body.nombre} ya existe`
+        });
+
+    const key_repeated = await Producto.find({clave: data.clave});
+    if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+
+    const altern_key = await Producto.find({clave_alterna: data.clave_alterna});
+    if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
     // lo de new: true nada más es para que en la variable Producto se guarde ya actualizado y verlo en la respuesta
     const producto = await Producto.findByIdAndUpdate(id, data, {new: true});
 
@@ -118,7 +128,7 @@ const updateProducto = async(req, res = response)=>{
 
 const deleteProducto  = async(req, res = response)=>{
     const {id} = req.params;
-    // new en true para que me regrese la Producto después de actualizarse
+    // new en true para que me regrese el Producto después de actualizarse
     const productoBorrado = await Producto.findByIdAndUpdate(id, {estado: false}, {new: true});
 
     res.json({

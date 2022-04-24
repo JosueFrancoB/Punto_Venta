@@ -6,17 +6,15 @@ const crearCategoria = async(req, res = response)=>{
     
     const nombre = req.body.nombre.toUpperCase();
 
-    //TODO: Arreglar que solo compruebe el usuario repetido si no esta eliminado estado: true
-    const categoriaDB = await Categoria.findOne({nombre});
-
+    const categoriaDB = await Categoria.findOne({nombre, estado: true});
     if(categoriaDB){
-        res.status(400).json({
+        return res.status(400).json({
             ok: false,
             msg: `La categoría ${categoriaDB.nombre} ya existe`
         })
     }
     const { img = '', estado } = req.body;
-    
+
     // Generar data a guardar
     const data = {
         nombre,
@@ -73,8 +71,16 @@ const getCategoriaPorID = async(req, res = response)=>{
 const updateCategoria = async(req, res = response)=>{
     const {id} = req.params;
     const { estado, ...data } = req.body;
-    console.log('la data', data);
     data.nombre = data.nombre.toUpperCase()
+    
+    const categoriaDB = await Categoria.findOne({nombre: data.nombre, estado: true});
+
+    if(categoriaDB){
+        return res.status(400).json({
+            ok: false,
+            msg: `La categoría ${categoriaDB.nombre} ya existe`
+        })
+    }
     // data.nombre = data.nombre.toUpperCase();
     // data.usuario = req.usuario._id;
     // lo de new: true nada más es para que en la variable categoria se guarde ya actualizado y verlo en la respuesta
@@ -84,6 +90,7 @@ const updateCategoria = async(req, res = response)=>{
         ok: true,
         categoria
     });
+
 }
 
 const deleteCategoria  = async(req, res = response)=>{

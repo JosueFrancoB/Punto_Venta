@@ -50,11 +50,16 @@ const getProveedorPorID = async(req, res = response)=>{
 
 const provPost = async(req, res = response) =>{
 
-    console.log('Entre Post');
-    console.log(req.body);
     const {nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones} = req.body;
     const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones});
 
+    const proveedorDB = await Proveedor.find({rfc, estado: true});
+    if(proveedorDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `El rfc ${rfc} ya está registrado`
+        })
+    }
 
     await proveedor.save();
     res.json({
@@ -67,6 +72,14 @@ const provPatch = async(req, res = response) =>{
     // Esto para cuando los parametros se los ponemos directos en la ruta
     const {id} = req.params;
     const {_id, ...resto} = req.body;
+
+    const proveedorDB = await Proveedor.find({rfc: resto.rfc, estado: true});
+    if(proveedorDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `El rfc ${resto.rfc} ya está registrado`
+        })
+    }
 
     const proveedor = await Proveedor.findByIdAndUpdate(id, resto);
 

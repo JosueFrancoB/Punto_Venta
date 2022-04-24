@@ -349,16 +349,22 @@ const getUnitPorID = async (req, res = response) => {
 
 const unitsPost = async (req, res = response) => {
 
-    console.log('Entre units Post');
-    console.log(req.body);
-    const {
-        nombre,
-        abreviacion
-    } = req.body;
-    const unidad = new Unit({
-        nombre,
-        abreviacion
-    });
+    const {nombre, abreviacion} = req.body;
+    const unitDB = await Unit.find({nombre, estado: true});
+    if(unitDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `La unidad ${nombre} ya existe`
+        })
+    }
+    const unitAbvDB = await Unit.find({abreviacion, estado: true});
+    if(unitAbvDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `La abreviacion ${abreviacion} ya existe`
+        })
+    }
+    const unidad = new Unit({nombre, abreviacion});
 
 
     await unidad.save();
@@ -370,13 +376,23 @@ const unitsPost = async (req, res = response) => {
 
 const unitsPatch = async (req, res = response) => {
     // Esto para cuando los parametros se los ponemos directos en la ruta
-    const {
-        id
-    } = req.params;
-    const {
-        _id,
-        ...resto
-    } = req.body;
+    const {id} = req.params;
+    const {_id, ...resto} = req.body;
+    const unitDB = await Unit.find({nombre: resto.nombre, estado: true});
+    if(unitDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `La unidad ${resto.nombre} ya existe`
+        })
+    }
+
+    const unitAbvDB = await Unit.find({abreviacion: resto.abreviacion, estado: true});
+    if(unitAbvDB.length > 0){
+        return res.status(400).json({
+            ok: false,
+            msg: `La abreviacion ${resto.abreviacion} ya existe`
+        })
+    }
 
     const unidad = await Unit.findByIdAndUpdate(id, resto);
 
@@ -388,17 +404,13 @@ const unitsPatch = async (req, res = response) => {
 
 const unitsDelete = async (req, res = response) => {
 
-    const {
-        id
-    } = req.params;
+    const {id} = req.params;
 
     // Borrarlo fisicamente
     // const unidad = await Usuario.findByIdAndDelete(id);
 
     // Borrarlo solo para la vista
-    const unidad = await Unit.findByIdAndUpdate(id, {
-        estado: false
-    });
+    const unidad = await Unit.findByIdAndUpdate(id, {estado: false});
 
     res.json({
         ok: true,

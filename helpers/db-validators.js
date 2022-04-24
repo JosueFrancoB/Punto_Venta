@@ -13,13 +13,13 @@ const emailExiste = async(correo = '', db_model = "")=>{
     var existeEmail = undefined
     switch (db_model) {
         case 'user':
-            existeEmail = await Usuario.findOne({correos: correo})
+            existeEmail = await Usuario.findOne({correos: correo, estado: true})
             break;
         case 'prov':
-            existeEmail = await Proveedor.findOne({correos: correo})
+            existeEmail = await Proveedor.findOne({correos: correo, estado: true})
             break;
         case 'cli':
-            existeEmail = await Cliente.findOne({correos: correo})
+            existeEmail = await Cliente.findOne({correos: correo, estado: true})
             break;
         default:
             break;
@@ -28,6 +28,7 @@ const emailExiste = async(correo = '', db_model = "")=>{
     if(existeEmail){
         throw new Error(`El correo ${correo}, ya está registrado`)
     }
+    return true;
 }
 
 // Verificar si el usuario existe
@@ -83,10 +84,10 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
     var existeTelefono = undefined
     switch (db_model) {
         case "prov":
-            existeTelefono = await Proveedor.findOne({telefonos: telefono})
+            existeTelefono = await Proveedor.findOne({telefonos: telefono, estado: true})
             break
         case "cli":
-            existeTelefono = await Cliente.findOne({telefonos: telefono})
+            existeTelefono = await Cliente.findOne({telefonos: telefono, estado: true})
             break
         default:
             break;

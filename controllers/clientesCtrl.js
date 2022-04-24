@@ -50,8 +50,6 @@ const getClientePorID = async(req, res = response)=>{
 
 const clientsPost = async(req, res = response) =>{
 
-    console.log('Entre clients Post');
-    console.log(req.body);
     const {nombre, nombre_empresa, telefonos, correos, direcciones} = req.body;
     const cliente = new Cliente({nombre, nombre_empresa, telefonos, correos, direcciones});
 
