@@ -1,6 +1,6 @@
 const { response } = require("express");
 const {subirArchivo} = require('../helpers');
-const {Usuario, Producto} = require('../models');
+const {Usuario, Producto, Categoria} = require('../models');
 const path = require('path');
 const fs = require('fs');
 
@@ -11,10 +11,13 @@ const cargarArchivo = async(req, res=response)=>{
         //txt md
         // const nombre = await subirArchivo(req.files, ['txt', 'md']);
         const nombre = await subirArchivo(req.files, undefined, 'imgs');
-        res.json({nombre})
+        res.json({nombre, ok: true})
 
     } catch (msg) {
-        res.status(400).json({msg})
+        res.status(400).json({
+            ok: false,
+            msg
+        })
     }
 
 
@@ -30,6 +33,7 @@ const actualizarImagen = async(req, res=response)=>{
             modelo = await Usuario.findById(id);
             if(!modelo){
                 return res.status(400).json({
+                    ok: false,
                     msg: `No existe un usuario con el id ${id}`
                 })
             }
@@ -38,12 +42,23 @@ const actualizarImagen = async(req, res=response)=>{
             modelo = await Producto.findById(id);
             if(!modelo){
                 return res.status(400).json({
+                    ok: false,
                     msg: `No existe un producto con el id ${id}`
+                })
+            }
+        break;
+        case 'categorias':
+            modelo = await Categoria.findById(id);
+            if(!modelo){
+                return res.status(400).json({
+                    ok: false,
+                    msg: `No existe un categoria con el id ${id}`
                 })
             }
         break;
         default:
             return res.status(500).json({
+                ok: false,
                 msg: 'Se me olvido programar esto'
             })
     }
@@ -66,7 +81,10 @@ const actualizarImagen = async(req, res=response)=>{
     modelo.img = nombre;
 
     await modelo.save();
-    res.json(modelo);
+    res.json({
+        ok: true,
+        modelo
+    });
 }
 
 const mostrarImagen = async(req, res=response)=>{
@@ -79,6 +97,7 @@ const mostrarImagen = async(req, res=response)=>{
             modelo = await Usuario.findById(id);
             if(!modelo){
                 return res.status(400).json({
+                    ok: false,
                     msg: `No existe un usuario con el id ${id}`
                 })
             }
@@ -87,12 +106,23 @@ const mostrarImagen = async(req, res=response)=>{
             modelo = await Producto.findById(id);
             if(!modelo){
                 return res.status(400).json({
+                    ok: false,
                     msg: `No existe un producto con el id ${id}`
+                })
+            }
+        break;
+        case 'categorias':
+            modelo = await Categoria.findById(id);
+            if(!modelo){
+                return res.status(400).json({
+                    ok: false,
+                    msg: `No existe una categoria con el id ${id}`
                 })
             }
         break;
         default:
             return res.status(500).json({
+                ok: false,
                 msg: 'Se me olvido programar esto'
             })
     }

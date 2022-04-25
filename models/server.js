@@ -2,33 +2,47 @@ const express = require('express')
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const { dbConnection, crearRoles } = require('../db/config');
+const startConfig = require('../helpers/start-config');
+
 
 class Server{
 
     constructor(){
+        console.clear();
         this.app = express();
-        this.port = process.env.PORT;
+        this.server = require('http').createServer(this.app);
+        this.cargarConfig();
+    }
+    async cargarConfig(){
+        await startConfig();
+        this.port = global.app.port;
+
         this.rutas = {
-            auth: '/api/auth',
-            buscar: '/api/buscar',
-            categorias: '/api/categorias',
-            productos: '/api/productos',
-            uploads: '/api/uploads',
-            users: '/api/users',
-            providers: '/api/providers'
+            auth: '/auth',
+            buscar: '/buscar',
+            categorias: '/categorias',
+            productos: '/productos',
+            uploads: '/uploads',
+            users: '/users',
+            providers: '/providers',
+            clients: '/clientes',
+            attributes: '/attributes',
+            sales: '/sales'
         }
-        
-        // Conectarse a db
-        this.conectarDB();
 
-        // Middlewares funciones que se ejecutan al inicio
+        //Midlewares
         this.middlewares();
+        // Conectarse a db
+        this.conectarDB()
 
-        //Crea roles en la db que se especifican en el archivo config.json
+         //Crea roles en la db que se especifican en el archivo config.json
         this.dbRoles()
 
         // rutas
         this.routes();
+
+        this.listen();
+
     }
 
     async conectarDB(){
@@ -59,13 +73,17 @@ class Server{
     }
 
     routes(){
-        this.app.use(this.rutas.auth, require('../routes/authRoutes'));
-        this.app.use(this.rutas.buscar, require('../routes/buscarRoutes'));
-        this.app.use(this.rutas.categorias, require('../routes/categoriasRoutes'));
+        this.app.use(this.rutas.auth,      require('../routes/authRoutes'));
+        this.app.use(this.rutas.buscar,    require('../routes/buscarRoutes'));
+        this.app.use(this.rutas.categorias,require('../routes/categoriasRoutes'));
         this.app.use(this.rutas.productos, require('../routes/productosRoutes'));
-        this.app.use(this.rutas.uploads, require('../routes/uploadsRoutes'));
-        this.app.use(this.rutas.users, require('../routes/usersRoutes'));
+        this.app.use(this.rutas.uploads,   require('../routes/uploadsRoutes'));
+        this.app.use(this.rutas.users,     require('../routes/usersRoutes'));
         this.app.use(this.rutas.providers, require('../routes/provRoutes'));
+        this.app.use(this.rutas.clients, require('../routes/clientesRoutes'));
+        this.app.use(this.rutas.clients, require('../routes/clientesRoutes'));
+        this.app.use(this.rutas.attributes, require('../routes/attrRoutes'));
+        this.app.use(this.rutas.sales,     require('../routes/salesRoutes'));
     }
 
     listen(){

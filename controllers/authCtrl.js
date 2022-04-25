@@ -14,14 +14,16 @@ const login = async(req, res = response)=>{
         const usuario = await Usuario.findOne({correo});
         if(!usuario){
             return res.status(400).json({
-                msg: 'Usuario o contraseña incorrectos - correo'
+                ok: false,
+                msg: 'El correo no existe'
             });
         }
 
         // Si el usuario no está borrado esta con estado true
         if(!usuario.estado){
             return res.status(400).json({
-                msg: 'Usuario o contraseña incorrectos - estado:false'
+                ok: false,
+                msg: 'El correo no está habilitado'
             });
         }
 
@@ -30,21 +32,29 @@ const login = async(req, res = response)=>{
         const validPassword = bcryptjs.compareSync(password, usuario.password);
         if(!validPassword){
             return res.status(400).json({
-                msg: 'Usuario o contraseña incorrectos - password'
+                ok: false,
+                msg: 'La contraseña es incorrecta'
             });
         }
 
         // Generar un JWT JsonWebToken
         const token = await generarJWT(usuario.id); 
-
+        const {rol, estado, google, nombre, correo: correo2, _id: uid} = usuario
         res.json({
-            usuario,
-            token
+            rol,
+            estado, 
+            google, 
+            nombre,
+            correo: correo2,
+            uid,
+            token,
+	        ok: true
         })
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            msg: 'hable con el administrador'
+    	    ok: false,
+            msg: 'Ocurrió un error'
         })
     }
 }
@@ -73,6 +83,7 @@ const googleSignIn = async(req = request, res = response, )=>{
 
         if(!usuario.estado){
             res.status(401).json({
+                ok: false,
                 msg: 'Hable con el admin, usuario bloqueado'
             })
         }
@@ -86,6 +97,7 @@ const googleSignIn = async(req = request, res = response, )=>{
         })
     } catch (error) {
         res.status(400).json({
+            ok: false,
             msg: 'El token no es válido'
         })
     }
@@ -93,7 +105,20 @@ const googleSignIn = async(req = request, res = response, )=>{
     
 }
 
+const revalidarToken = async(req, res = response)=>{
+    const {_id: uid, nombre} = req.usuario
+    const token = await generarJWT(uid); 
+    return res.status(200).json({
+        ok: true,
+        uid,
+        nombre,
+        token
+    })
+
+}
+
 module.exports = {
     login,
-    googleSignIn
+    googleSignIn,
+    revalidarToken
 }

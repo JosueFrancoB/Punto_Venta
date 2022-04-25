@@ -10,11 +10,25 @@ const esRoleValido = async(rol = '') =>{
 
 // Verificar si el correo es repetido
 const emailExiste = async(correo = '', db_model = "")=>{
-    let db_models = {"user": Usuario, "prov": Proveedor, "cli": Cliente}
-    const existeEmail = await db_models[db_model].findOne({correo: correo});
+    var existeEmail = undefined
+    switch (db_model) {
+        case 'user':
+            existeEmail = await Usuario.findOne({correos: correo, estado: true})
+            break;
+        case 'prov':
+            existeEmail = await Proveedor.findOne({correos: correo, estado: true})
+            break;
+        case 'cli':
+            existeEmail = await Cliente.findOne({correos: correo, estado: true})
+            break;
+        default:
+            break;
+    }
+    
     if(existeEmail){
         throw new Error(`El correo ${correo}, ya está registrado`)
     }
+    return true;
 }
 
 // Verificar si el usuario existe
@@ -33,6 +47,23 @@ const existeCategoriaPorId = async (id) =>{
     }
 }
 
+// Verificar si el proveedor existe
+const existeProveedorPorId = async (id) =>{
+    const existeProveedor = await Proveedor.findById(id);
+    if(!existeProveedor){
+        throw new Error(`El id ${id} no existe`)
+    }
+}
+
+// Verificar si el cliente existe
+const existeClientePorId = async (id) =>{
+    const existeCliente = await Cliente.findById(id);
+    if(!existeCliente){
+        throw new Error(`El id ${id} no existe`)
+    }
+}
+
+
 // Verificar si la categoria existe
 const existeProductoPorId = async (id) =>{
     const existeProducto = await Producto.findById(id);
@@ -50,19 +81,33 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) =>{
 }
 
 const telefonoUnico = async(telefono = '', db_model = "") =>{
-    let db_models = {"prov": Proveedor, "cli": Cliente}
-    const existeTelefono = await db_models[db_model].findOne({telefono: telefono})
+    var existeTelefono = undefined
+    switch (db_model) {
+        case "prov":
+            existeTelefono = await Proveedor.findOne({telefonos: telefono, estado: true})
+            break
+        case "cli":
+            existeTelefono = await Cliente.findOne({telefonos: telefono, estado: true})
+            break
+        default:
+            break;
+    }
     if (existeTelefono){
         throw new Error(`El teléfono ${telefono} ya existe`)
     }
+    return true;
 }
 
-// Verificar si el proveedor existe
-const existeProvedorPorId = async (id) =>{
-    const existeProveedor = await Proveedor.findById(id);
-    if(!existeProveedor){
-        throw new Error(`El id ${id} no existe`)
-    }
+// Función para validar un RFC México
+// Devuelve el RFC sin espacios ni guiones si es correcto
+// Devuelve false si es inválido
+// (debe estar en mayúsculas, guiones y espacios intermedios opcionales)
+const validarRFC = (rfc)=> {
+    const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
+    var validado = rfc.match(re);
+    if (validado === null)  // Coincide con el formato general del regex?
+        throw new Error(`Rfc no valido`);
+    return true
 }
 
 module.exports ={
@@ -73,5 +118,7 @@ module.exports ={
     existeProductoPorId,
     coleccionesPermitidas,
     telefonoUnico,
-    existeProvedorPorId
+    existeProveedorPorId,
+    existeClientePorId,
+    validarRFC
 } 

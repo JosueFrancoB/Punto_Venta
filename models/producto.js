@@ -3,39 +3,71 @@ const {Schema, model} = require('mongoose');
 const ProductoSchema = Schema({
     nombre: {
         type: String,
-        required: [true, 'El nombre es obligatorio'],
-        unique: true
+        required: [true, 'La nombre es obligatorio']
+    },
+    descripcion: {
+        type: String,
+    },
+    clave: {
+        type: String,
+    },
+    clave_alterna: {
+        type: String,
     },
     estado: {
         type: Boolean,
         default: true,
-        required: true
     },
-    // El usuario que lo crea
-    usuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario',
-        required: true
-    },
-    precio: {
+    precio_compra: {
         type: Number,
         default: 0
+    },
+    precio_venta: {
+        type: Number,
+        default: 0
+    },
+    unidad_venta:{
+        type: String,
+    },
+    unidad_compra:{
+        type: String,
+    },
+    factor: {
+        type: Number,
+        default: 1
     },
     categoria: {
         type: Schema.Types.ObjectId,
         ref: 'Categoria',
         required: true
     },
-    descripcion: {
-        type: String
-    },
     disponible: {
         type: Boolean,
         default: true
     },
     img: {
-        type: String
+        type: String,
+    },
+    granel: {
+        type: Boolean
+    },
+    inventario_max: {
+        type: Number,
+        default: 0
+    },
+    inventario_min: {
+        type: Number,
+        default: 0
+    },
+    proveedor: {
+        type: Schema.Types.ObjectId,
+        ref: 'Proveedor',
+    },
+    existencias: {
+        type: Number,
+        default: 0
     }
+
 });
 
 

@@ -3,21 +3,23 @@ const {Categoria} = require("../models");
 
 
 const crearCategoria = async(req, res = response)=>{
-
+    
     const nombre = req.body.nombre.toUpperCase();
 
-    const categoriaDB = await Categoria.findOne({nombre});
-
+    const categoriaDB = await Categoria.findOne({nombre, estado: true});
     if(categoriaDB){
-        res.status(400).json({
+        return res.status(400).json({
+            ok: false,
             msg: `La categoría ${categoriaDB.nombre} ya existe`
         })
     }
+    const { img = '', estado } = req.body;
 
     // Generar data a guardar
     const data = {
         nombre,
-        usuario: req.usuario._id
+        img,
+        estado
     }
 
     const categoria = new Categoria(data);
@@ -26,12 +28,15 @@ const crearCategoria = async(req, res = response)=>{
     await categoria.save();
 
     // Status 201 algo se creó
-    res.status(201).json(categoria)
+    res.status(201).json({
+        ok: true,
+        categoria
+    })
 
 }
 
 const categoriasGet = async(req, res = response)=>{
-    const {limite = 5, desde = 0} = req.query;
+    const {limite = 10, desde = 0} = req.query;
     const query = {estado: true};
 
     const [total, categorias] = await Promise.all([
@@ -43,6 +48,7 @@ const categoriasGet = async(req, res = response)=>{
     ]);
 
     res.json({
+        ok: true,
         total,
         categorias
     });
@@ -52,9 +58,10 @@ const getCategoriaPorID = async(req, res = response)=>{
     // En el params viene como id pero yo quiero que la variable sea _id para con findOne buscarlo en la DB
     const {id} = req.params;
 
-    const categoria = await Categoria.findById(id).populate('usuario', 'nombre');
+    const categoria = await Categoria.findById(id);
     
     res.json({
+        ok:true,
         categoria,
         // categoria
     })
@@ -63,14 +70,29 @@ const getCategoriaPorID = async(req, res = response)=>{
 
 const updateCategoria = async(req, res = response)=>{
     const {id} = req.params;
-    const {estado, usuario, ...data} = req.body;
+    const { estado, ...data } = req.body;
+    data.nombre = data.nombre.toUpperCase()
     
-    data.nombre = data.nombre.toUpperCase();
-    data.usuario = req.usuario._id;
+    const categoriaDB = await Categoria.findOne({
+        $and: [ { "_id": { $ne: id } }, { nombre: data.nombre}, { estado: true } ]
+    });
+
+    if(categoriaDB){
+        return res.status(400).json({
+            ok: false,
+            msg: `La categoría ${categoriaDB.nombre} ya existe`
+        })
+    }
+    // data.nombre = data.nombre.toUpperCase();
+    // data.usuario = req.usuario._id;
     // lo de new: true nada más es para que en la variable categoria se guarde ya actualizado y verlo en la respuesta
     const categoria = await Categoria.findByIdAndUpdate(id, data, {new: true});
 
-    res.json(categoria);
+    res.json({
+        ok: true,
+        categoria
+    });
+
 }
 
 const deleteCategoria  = async(req, res = response)=>{
@@ -79,6 +101,7 @@ const deleteCategoria  = async(req, res = response)=>{
     const categoriaBorrada = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true});
 
     res.json({
+        ok: true,
         categoriaBorrada
     });
 }
