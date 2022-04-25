@@ -349,7 +349,10 @@ const getUnitPorID = async (req, res = response) => {
 
 const unitsPost = async (req, res = response) => {
 
-    const {nombre, abreviacion} = req.body;
+    let {nombre, abreviacion} = req.body;
+    nombre = nombre.toUpperCase().trim()
+    if (abreviacion)
+        abreviacion = abreviacion.toLowerCase().trim()
     const unitDB = await Unit.find({nombre, estado: true});
     if(unitDB.length > 0){
         return res.status(400).json({
@@ -377,8 +380,14 @@ const unitsPost = async (req, res = response) => {
 const unitsPatch = async (req, res = response) => {
     // Esto para cuando los parametros se los ponemos directos en la ruta
     const {id} = req.params;
-    const {_id, ...resto} = req.body;
-    const unitDB = await Unit.find({nombre: resto.nombre, estado: true});
+    let {_id, ...resto} = req.body;
+    if (resto.nombre)
+        resto.nombre = resto.nombre.toUpperCase().trim()
+    if (resto.abreviacion)
+        resto.abreviacion = resto.abreviacion.toLowerCase().trim()
+    const unitDB = await Unit.find({
+        $and: [ { "_id": { $ne: id } }, { nombre: resto.nombre}, { estado: true } ]
+    });
     if(unitDB.length > 0){
         return res.status(400).json({
             ok: false,
@@ -386,7 +395,9 @@ const unitsPatch = async (req, res = response) => {
         })
     }
 
-    const unitAbvDB = await Unit.find({abreviacion: resto.abreviacion, estado: true});
+    const unitAbvDB = await Unit.find({
+        $and: [ { "_id": { $ne: id } }, { abreviacion: resto.abreviacion}, { estado: true } ]
+    });
     if(unitAbvDB.length > 0){
         return res.status(400).json({
             ok: false,

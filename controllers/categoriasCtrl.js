@@ -73,7 +73,9 @@ const updateCategoria = async(req, res = response)=>{
     const { estado, ...data } = req.body;
     data.nombre = data.nombre.toUpperCase()
     
-    const categoriaDB = await Categoria.findOne({nombre: data.nombre, estado: true});
+    const categoriaDB = await Categoria.findOne({
+        $and: [ { "_id": { $ne: id } }, { nombre: data.nombre}, { estado: true } ]
+    });
 
     if(categoriaDB){
         return res.status(400).json({
