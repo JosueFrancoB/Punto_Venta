@@ -36,7 +36,7 @@ router.post('/', [
 // Actualizar - privado cualquier persona con token válido
 router.patch('/:id', [
     validarJWT,
-    check('nombre', 'El nombre es obligatoria').not().isEmpty(),
+    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProductoPorId),
     validarCampos
@@ -46,7 +46,6 @@ router.patch('/:id', [
 router.delete('/:id', [
     validarJWT,
     esAdminRole,
-    check('descripcion', 'La descripción es obligatoria').not().isEmpty(),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProductoPorId),
     validarCampos
