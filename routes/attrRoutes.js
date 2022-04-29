@@ -36,8 +36,7 @@ const router = Router();
 router.get('/city/:state_id', [
     validarJWT,
     check('state_id', {
-        msg: 'Mongo id is not valid',
-        msg_es: 'No es un id de Mongo válido'
+        msg: 'No es un id de Mongo válido',
     }).isMongoId(),
     validarCampos,
     check('state_id').custom(exists_state_by_id),
@@ -50,8 +49,7 @@ router.get('/city/:state_id', [
 router.get('/state/:country_id', [
     validarJWT,
     check('country_id', {
-        msg: 'Mongo id is not valid',
-        msg_es: 'No es un id de Mongo válido'
+        msg: 'No es un id de Mongo válido',
     }).isMongoId(),
     validarCampos,
     check('country_id').custom(exists_country_by_id),
@@ -70,8 +68,7 @@ router.get('/countries', [
 router.post('/units', [
     validarJWT,
     check('nombre', {
-        msg: 'Unit name is required',
-        msg_es: 'El nombre de la unidad es obligatorio'
+        msg: 'El nombre de la unidad es obligatorio',
     }).not().isEmpty(),
     validarCampos
 ], unitsPost);
@@ -85,8 +82,7 @@ router.get('/units', [
 router.get('/units/:id', [
     validarJWT,
     check('id', {
-        msg: 'Mongo id is not valid',
-        msg_es: 'No es un id de Mongo válido'
+        msg: 'No es un id de Mongo válido',
     }).isMongoId(),
     validarCampos,
     check('id').custom(exists_unit_by_id),
@@ -97,8 +93,7 @@ router.get('/units/:id', [
 router.patch('/units/:id', [
     validarJWT,
     check('id', {
-        msg: 'Mongo id is not valid',
-        msg_es: 'No es un id de Mongo válido'
+        msg: 'No es un id de Mongo válido',
     }).isMongoId(),
     validarCampos,
     check('id').custom(exists_unit_by_id),
@@ -109,8 +104,7 @@ router.patch('/units/:id', [
 router.delete('/units/:id', [
     validarJWT,
     check('id', {
-        msg: 'Mongo id is not valid',
-        msg_es: 'No es un id de Mongo válido'
+        msg: 'No es un id de Mongo válido',
     }).isMongoId(),
     validarCampos,
     check('id').custom(exists_unit_by_id),
