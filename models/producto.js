@@ -27,10 +27,12 @@ const ProductoSchema = Schema({
         default: 0
     },
     unidad_venta:{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Unit',
     },
     unidad_compra:{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'Unit',
     },
     factor: {
         type: Number,
