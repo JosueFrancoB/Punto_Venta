@@ -3,6 +3,7 @@ const response = require('express')
 const country = require('../models/country');
 const state = require('../models/state');
 const unit = require('../models/unit');
+const almacen = require('../models/almacen');
 
 
 /* Country validator */
@@ -140,8 +141,7 @@ const exists_unit_by_id = async( id ) => {
 
         if( !exists_unit ) {
             throw { // Error message
-                msg: `Unit with id '${ id }' does not exist`,
-                msg_es: `La unidad con el identificador '${ id }' no existe`
+                msg: `La unidad con el identificador '${ id }' no existe`
             }
         } 
 
@@ -149,8 +149,31 @@ const exists_unit_by_id = async( id ) => {
 
         console.log(err);
         throw { // Error message
-            msg: "An error occurred while validate to unit id",
-            msg_es: "Ocurrio un error mientras se validaba el identificador de la unidad",
+            msg: "Ocurrio un error mientras se validaba el identificador de la unidad",
+        }
+
+    }
+    
+}
+
+const exists_warehouse_by_id = async( id ) => {
+
+    try { // If verification fails
+
+        // Search for concidence (almacenes)
+        const exists_almacen = await almacen.findById(id);
+
+        if( !exists_almacen ) {
+            throw { // Error message
+                msg: `El almacen con el id '${ id }' no existe`
+            }
+        } 
+
+    } catch(err) {
+
+        console.log(err);
+        throw { // Error message
+            msg: "Ocurrio un error mientras se validaba el identificador del almacen",
         }
 
     }
@@ -163,5 +186,6 @@ module.exports = {
     exists_state_by_id,
     validator_country,
     exists_country_by_id,
-    exists_unit_by_id
+    exists_unit_by_id,
+    exists_warehouse_by_id
 }

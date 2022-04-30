@@ -1,7 +1,4 @@
-const {
-    response,
-    request
-} = require("express");
+const {response, request} = require("express");
 // Models
 const city = require('../models/city');
 const state = require('../models/state');
