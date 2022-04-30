@@ -29,7 +29,8 @@ class Server{
             attributes: '/attributes',
             sales: '/sales',
             purchases: '/purchases',
-            finances: '/finances'
+            finances: '/finances',
+            warehouses: 'warehouses'
         };
 
         //Midlewares
@@ -88,6 +89,7 @@ class Server{
         this.app.use(this.rutas.sales,     require('../routes/salesRoutes'));
         this.app.use(this.rutas.purchases, require('../routes/comprasRoutes'));
         this.app.use(this.rutas.finances, require('../routes/financesRoutes'));
+        this.app.use(this.rutas.warehouses, require('../routes/almacenRoutes'));
     }
 
     listen(){

@@ -53,6 +53,10 @@ const ProductoSchema = Schema({
     granel: {
         type: Boolean
     },
+    almacen:{
+        type: Schema.Types.ObjectId,
+        ref: 'Almacen',
+    },
     inventario_max: {
         type: Number,
         default: 0
