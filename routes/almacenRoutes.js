@@ -12,7 +12,7 @@ const router = Router();
 
 /* {{url}}/units */
 // Create warehouse - private
-router.post('/warehouses', [
+router.post('/', [
     validarJWT,
     check('nombre', {
         msg: 'El nombre del almacen es obligatorio',
@@ -21,12 +21,12 @@ router.post('/warehouses', [
 ], warehousePost);
 
 // Get warehouses - private
-router.get('/warehouses', [
+router.get('/', [
     validarJWT
 ], warehousesGet);
 
 // Get warehouse by id - private
-router.get('/warehouses/:id', [
+router.get('/:id', [
     validarJWT,
     check('id', {
         msg: 'No es un id de Mongo válido',
@@ -37,7 +37,7 @@ router.get('/warehouses/:id', [
 ], getWarehouseById);
 
 // Update warehouse by id - private
-router.patch('/warehouses/:id', [
+router.patch('/:id', [
     validarJWT,
     check('id', {
         msg: 'No es un id de Mongo válido',
@@ -48,7 +48,7 @@ router.patch('/warehouses/:id', [
 ], warehousePatch);
 
 // Delete warehouse by id - private
-router.delete('/warehouses/:id', [
+router.delete('/:id', [
     validarJWT,
     check('id', {
         msg: 'No es un id de Mongo válido',

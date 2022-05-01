@@ -1,11 +1,14 @@
 const { response } = require("express");
 const {ObjectId} = require("mongoose").Types;
-const {Usuario, Categoria, Producto} = require("../models");
+const {Usuario, Categoria, Producto, Proveedor, Unidad, Almacen} = require("../models");
 
 const coleccionesPermitidas = [
     'usuarios',
     'categorias',
     'productos',
+    'unidades',
+    'almacenes',
+    'proveedores',
     'roles'
 ];
 
@@ -99,6 +102,77 @@ const buscarProductos = async(termino = '', res = response)=>{
 }
 
 
+const buscarUnidades = async(termino = '', res = response)=>{
+    
+    const esMongoId = ObjectId.isValid(termino); //True
+
+    // Quiere decir que esta buscando con el id
+    if(esMongoId){
+        const unidad = await Unidad.findById(termino);
+        return res.json({
+            results: (unidad) ? [unidad] : []
+        })
+    }
+
+    // Lo hago que sea insensible a mayusculas y minusculas
+    const regex = new RegExp(termino, 'i')
+
+    // Busca que el termino este en nombre y el estado siempre sea true
+    const unidades = await Unidad.find({nombre: regex, estado: true});
+
+    res.json({
+        results: unidades
+    })
+
+}
+
+const buscarAlmacenes = async(termino = '', res = response)=>{
+    
+    const esMongoId = ObjectId.isValid(termino); //True
+
+    // Quiere decir que esta buscando con el id
+    if(esMongoId){
+        const almacen = await Almacen.findById(termino);
+        return res.json({
+            results: (almacen) ? [almacen] : []
+        })
+    }
+
+    // Lo hago que sea insensible a mayusculas y minusculas
+    const regex = new RegExp(termino, 'i')
+
+    // Busca que el termino este en nombre y el estado siempre sea true
+    const almacenes = await Almacen.find({nombre: regex, estado: true});
+
+    res.json({
+        results: almacenes
+    })
+
+}
+
+const buscarProveedores = async(termino = '', res = response)=>{
+    
+    const esMongoId = ObjectId.isValid(termino); //True
+
+    // Quiere decir que esta buscando con el id
+    if(esMongoId){
+        const proveedor = await Proveedor.findById(termino);
+        return res.json({
+            results: (proveedor) ? [proveedor] : []
+        })
+    }
+
+    // Lo hago que sea insensible a mayusculas y minusculas
+    const regex = new RegExp(termino, 'i')
+
+    // Busca que el termino este en nombre y el estado siempre sea true
+    const proveedores = await Proveedor.find({nombre: regex, estado: true});
+
+    res.json({
+        results: proveedores
+    })
+
+}
 
 
 const buscar = (req, res = response)=>{
@@ -120,6 +194,15 @@ const buscar = (req, res = response)=>{
         break;
         case 'productos':
             buscarProductos(termino, res);
+        break;
+        case 'unidades':
+            buscarUnidades(termino, res);
+        break;
+        case 'almacenes':
+            buscarAlmacenes(termino, res);
+        break;
+        case 'proveedores':
+            buscarProveedores(termino, res);
         break;
         default:
             res.status(500).json({
