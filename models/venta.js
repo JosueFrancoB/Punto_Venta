@@ -4,7 +4,8 @@ const {Schema, model} = require('mongoose');
 const VentaSchema = new Schema({
 
     fecha: {
-        type: Date
+        type: Date,
+        default: Date.now
     },
     codigo:{
         type: String
@@ -29,16 +30,18 @@ const VentaSchema = new Schema({
     cliente:{
         id_cliente: Schema.Types.ObjectId,
         nombre: String,
-        apellido: String,
+        nombre_empresa: String
     },
     usuario_venta:{
         id_usuario: Schema.Types.ObjectId,
-        nombre: String,
-        apellido: String,
+        nombre: String
     },
     estado:{
         type: Boolean,
         default: true
+    },
+    notas:{
+        type: String
     },
     cancelada:{
         type: Boolean,

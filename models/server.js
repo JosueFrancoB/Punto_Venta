@@ -30,7 +30,7 @@ class Server{
             sales: '/sales',
             purchases: '/purchases',
             finances: '/finances',
-            warehouses: 'warehouses'
+            warehouses: '/warehouses'
         };
 
         //Midlewares

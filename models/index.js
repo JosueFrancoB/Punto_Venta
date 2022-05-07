@@ -9,6 +9,8 @@ const Entrada = require('./entrada');
 const DetEntrada = require('./detalle_entrada');
 const Venta = require('./venta');
 const DetVenta = require('./detalle_venta');
+const Unidad = require('./unit');
+const Almacen = require('./almacen');
 
 
 module.exports = {
@@ -22,5 +24,7 @@ module.exports = {
     Entrada,
     DetEntrada,
     Venta,
-    DetVenta
+    DetVenta,
+    Unidad,
+    Almacen
 }
