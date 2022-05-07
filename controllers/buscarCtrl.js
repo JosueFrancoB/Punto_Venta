@@ -20,7 +20,8 @@ const buscarUsuarios = async(termino = '', res = response)=>{
     if(esMongoId){
         const usuario = await Usuario.findById(termino);
         return res.json({
-            results: (usuario) ? [usuario] : []
+            results: (usuario) ? [usuario] : [],
+            count: results.length
         })
     }
 
@@ -34,7 +35,8 @@ const buscarUsuarios = async(termino = '', res = response)=>{
     });
 
     res.json({
-        results: usuarios
+        results: usuarios,
+        count: results.length
     })
 
 }
@@ -47,7 +49,8 @@ const buscarCategorias = async(termino = '', res = response)=>{
     if(esMongoId){
         const categoria = await Categoria.findById(termino);
         return res.json({
-            results: (categoria) ? [categoria] : []
+            results: (categoria) ? [categoria] : [],
+            count: categoria.length
         })
     }
 
@@ -58,7 +61,8 @@ const buscarCategorias = async(termino = '', res = response)=>{
     const categorias = await Categoria.find({nombre: regex, estado: true});
 
     res.json({
-        results: categorias
+        results: categorias,
+        count: categorias.length
     })
 
 }
@@ -71,7 +75,8 @@ const buscarProductos = async(termino = '', res = response)=>{
     if(esMongoId){
         const producto = await Producto.findById(termino).populate('categoria', 'nombre');
         return res.json({
-            results: (producto) ? [producto] : []
+            results: (producto) ? [producto] : [],
+            count: producto.length
         })
     }
 
@@ -90,13 +95,15 @@ const buscarProductos = async(termino = '', res = response)=>{
     }
     // Busca que el termino este en nombre o por categoria y que en cualquier caso el estado siempre sea true
     const productos = await Producto.find({
-        $or: [{nombre: regex}, {categoria: ObjectId(idCategoria)}],
+        $or: [{nombre: regex}, {clave: regex}, {clave_alterna: regex}, {categoria: ObjectId(idCategoria)}],
         $and: [{estado: true}]
         
     }).populate('categoria', 'nombre');
+    
 
     res.json({
-        results: productos
+        results: productos,
+        count: productos.length
     })
 
 }
@@ -110,7 +117,8 @@ const buscarUnidades = async(termino = '', res = response)=>{
     if(esMongoId){
         const unidad = await Unidad.findById(termino);
         return res.json({
-            results: (unidad) ? [unidad] : []
+            results: (unidad) ? [unidad] : [],
+            count: unidad.length
         })
     }
 
@@ -121,7 +129,8 @@ const buscarUnidades = async(termino = '', res = response)=>{
     const unidades = await Unidad.find({nombre: regex, estado: true});
 
     res.json({
-        results: unidades
+        results: unidades,
+        count: unidades.length
     })
 
 }
@@ -134,7 +143,8 @@ const buscarAlmacenes = async(termino = '', res = response)=>{
     if(esMongoId){
         const almacen = await Almacen.findById(termino);
         return res.json({
-            results: (almacen) ? [almacen] : []
+            results: (almacen) ? [almacen] : [],
+            count: almacen.length
         })
     }
 
@@ -145,7 +155,8 @@ const buscarAlmacenes = async(termino = '', res = response)=>{
     const almacenes = await Almacen.find({nombre: regex, estado: true});
 
     res.json({
-        results: almacenes
+        results: almacenes,
+        count: almacenes.length
     })
 
 }
@@ -158,7 +169,8 @@ const buscarProveedores = async(termino = '', res = response)=>{
     if(esMongoId){
         const proveedor = await Proveedor.findById(termino);
         return res.json({
-            results: (proveedor) ? [proveedor] : []
+            results: (proveedor) ? [proveedor] : [],
+            count: proveedor.length
         })
     }
 
@@ -169,7 +181,8 @@ const buscarProveedores = async(termino = '', res = response)=>{
     const proveedores = await Proveedor.find({nombre: regex, estado: true});
 
     res.json({
-        results: proveedores
+        results: proveedores,
+        count: proveedores.length
     })
 
 }
