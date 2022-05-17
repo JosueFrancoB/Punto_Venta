@@ -1,6 +1,6 @@
 const { response } = require("express");
 const {ObjectId} = require("mongoose").Types;
-const {Usuario, Categoria, Producto, Proveedor, Unidad, Almacen} = require("../models");
+const {Usuario, Categoria, Producto, Proveedor, Unidad, Almacen, Cliente} = require("../models");
 
 const coleccionesPermitidas = [
     'usuarios',
@@ -9,6 +9,7 @@ const coleccionesPermitidas = [
     'unidades',
     'almacenes',
     'proveedores',
+    'clientes',
     'roles'
 ];
 
@@ -187,6 +188,32 @@ const buscarProveedores = async(termino = '', res = response)=>{
 
 }
 
+const buscarClientes = async(termino = '', res = response)=>{
+    
+    const esMongoId = ObjectId.isValid(termino); //True
+
+    // Quiere decir que esta buscando con el id
+    if(esMongoId){
+        const cliente = await Cliente.findById(termino);
+        return res.json({
+            results: (cliente) ? [cliente] : [],
+            count: cliente.length
+        })
+    }
+
+    // Lo hago que sea insensible a mayusculas y minusculas
+    const regex = new RegExp(termino, 'i')
+
+    // Busca que el termino este en nombre y el estado siempre sea true
+    const clientes = await Cliente.find({nombre: regex, estado: true});
+
+    res.json({
+        results: clientes,
+        count: clientes.length
+    })
+
+}
+
 
 const buscar = (req, res = response)=>{
 
@@ -216,6 +243,9 @@ const buscar = (req, res = response)=>{
         break;
         case 'proveedores':
             buscarProveedores(termino, res);
+        break;
+        case 'clientes':
+            buscarClientes(termino, res);
         break;
         default:
             res.status(500).json({

@@ -22,13 +22,13 @@ const VentaSchema = new Schema({
         default: 0
     },
     productos:[{
-        id_producto: Schema.Types.ObjectId,
+        _id: Schema.Types.ObjectId,
         nombre: String,
         precio: Number,
         cantidad: Number,
     }],
     cliente:{
-        id_cliente: Schema.Types.ObjectId,
+        _id: Schema.Types.ObjectId,
         nombre: String,
         nombre_empresa: String
     },
