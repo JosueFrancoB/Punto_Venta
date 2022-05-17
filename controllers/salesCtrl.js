@@ -59,7 +59,7 @@ const createSale = async (req, res) => {
 
     //Generar codigo de venta
     codigo =  await Venta.countDocuments({});
-    codigo = `${codigo}${fecha.getFullYear()}${fecha.getMonth()}${fecha.getDate()}`;
+    codigo = `${codigo+1}${fecha.getFullYear()}${fecha.getMonth()}${fecha.getDate()}`;
 
     //Generar data a guardar
     const data = {
@@ -189,11 +189,11 @@ const cancelSale = async (req, res) => {
 
 const reduceFromStock = async (products) => {
     products.forEach(async (product) => {
-        const {existencias} = await Producto.findById(product.id_producto);
+        const {existencias} = await Producto.findById(product._id);
         let new_stock = 0;
         if (existencias - product.cantidad > 0) new_stock = existencias - product.cantidad;
         
-        await Producto.findByIdAndUpdate(product.id_producto, {existencias: new_stock});
+        await Producto.findByIdAndUpdate(product._id, {existencias: new_stock});
     });
 };  
 
