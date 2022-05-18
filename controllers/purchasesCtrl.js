@@ -164,9 +164,9 @@ const deletePurchase = async (req, res) => {
 
 const increaseStock = async (productos) => {
     productos.forEach(async (producto) => {
-        const {existencias} = await Producto.findById(producto.id_producto);
+        const {existencias} = await Producto.findById(producto._id);
         const new_stock = existencias + producto.cantidad;
-        await Producto.findByIdAndUpdate(producto.id_producto, {existencias: new_stock});
+        await Producto.findByIdAndUpdate(producto._id, {existencias: new_stock});
     });
 };
 
