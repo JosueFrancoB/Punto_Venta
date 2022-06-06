@@ -13,11 +13,15 @@ const crearProducto = async(req, res = response)=>{
             msg: `El producto ${body.nombre} ya existe`
         });
     }
-    const key_repeated = await Producto.find({clave: body.clave, estado: true});
-    if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+    if (body.clave){
+        const key_repeated = await Producto.find({clave: body.clave, estado: true});
+        if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+    }
 
-    const altern_key = await Producto.find({clave_alterna: body.clave_alterna, estado: true});
-    if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+    if(body.clave_alterna){
+        const altern_key = await Producto.find({clave_alterna: body.clave_alterna, estado: true});
+        if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+    }
 
 
     // Generar data a guardar
@@ -113,12 +117,16 @@ const updateProducto = async(req, res = response)=>{
         return res.status(400).json({
             ok: false, msg: `El producto ${data.nombre} ya existe`
         });
+    
+    if (body.clave){
+        const key_repeated = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave: data.clave}, { estado: true } ]});
+        if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
+    }
 
-    const key_repeated = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave: data.clave}, { estado: true } ]});
-    if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
-
-    const altern_key = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave_alterna: data.clave_alterna}, { estado: true } ]});
-    if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+    if (body.clave_alterna){
+        const altern_key = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave_alterna: data.clave_alterna}, { estado: true } ]});
+        if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
+    }
     // lo de new: true nada más es para que en la variable Producto se guarde ya actualizado y verlo en la respuesta
     const producto = await Producto.findByIdAndUpdate(id, data, {new: true});
 
