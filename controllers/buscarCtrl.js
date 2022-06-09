@@ -13,9 +13,10 @@ const coleccionesPermitidas = [
     'roles'
 ];
 
-const buscarUsuarios = async(termino = '', res = response)=>{
+const buscarUsuarios = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -33,7 +34,7 @@ const buscarUsuarios = async(termino = '', res = response)=>{
     const usuarios = await Usuario.find({
         $or: [{nombre: regex}, {correo: regex}],
         $and: [{estado: true}]
-    });
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: usuarios,
@@ -42,9 +43,10 @@ const buscarUsuarios = async(termino = '', res = response)=>{
 
 }
 
-const buscarCategorias = async(termino = '', res = response)=>{
+const buscarCategorias = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -59,7 +61,9 @@ const buscarCategorias = async(termino = '', res = response)=>{
     const regex = new RegExp(termino, 'i')
 
     // Busca que el termino este en nombre y el estado siempre sea true
-    const categorias = await Categoria.find({nombre: regex, estado: true});
+    const categorias = await Categoria.find({
+        nombre: regex, estado: true
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: categorias,
@@ -68,9 +72,10 @@ const buscarCategorias = async(termino = '', res = response)=>{
 
 }
 
-const buscarProductos = async(termino = '', res = response)=>{
+const buscarProductos = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -98,9 +103,8 @@ const buscarProductos = async(termino = '', res = response)=>{
     const productos = await Producto.find({
         $or: [{nombre: regex}, {clave: regex}, {clave_alterna: regex}, {categoria: ObjectId(idCategoria)}],
         $and: [{estado: true}]
-        
-    }).populate('categoria', 'nombre');
-    
+    }).populate('categoria', 'nombre').skip(Number(from)).limit(Number(limit));
+    console.log(`Los productos: ${productos}`);
 
     res.json({
         results: productos,
@@ -110,9 +114,10 @@ const buscarProductos = async(termino = '', res = response)=>{
 }
 
 
-const buscarUnidades = async(termino = '', res = response)=>{
+const buscarUnidades = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -127,7 +132,9 @@ const buscarUnidades = async(termino = '', res = response)=>{
     const regex = new RegExp(termino, 'i')
 
     // Busca que el termino este en nombre y el estado siempre sea true
-    const unidades = await Unidad.find({nombre: regex, estado: true});
+    const unidades = await Unidad.find({
+        nombre: regex, estado: true
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: unidades,
@@ -136,9 +143,10 @@ const buscarUnidades = async(termino = '', res = response)=>{
 
 }
 
-const buscarAlmacenes = async(termino = '', res = response)=>{
+const buscarAlmacenes = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -153,7 +161,9 @@ const buscarAlmacenes = async(termino = '', res = response)=>{
     const regex = new RegExp(termino, 'i')
 
     // Busca que el termino este en nombre y el estado siempre sea true
-    const almacenes = await Almacen.find({nombre: regex, estado: true});
+    const almacenes = await Almacen.find({
+        nombre: regex, estado: true
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: almacenes,
@@ -162,9 +172,10 @@ const buscarAlmacenes = async(termino = '', res = response)=>{
 
 }
 
-const buscarProveedores = async(termino = '', res = response)=>{
+const buscarProveedores = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -179,7 +190,9 @@ const buscarProveedores = async(termino = '', res = response)=>{
     const regex = new RegExp(termino, 'i')
 
     // Busca que el termino este en nombre y el estado siempre sea true
-    const proveedores = await Proveedor.find({nombre: regex, estado: true});
+    const proveedores = await Proveedor.find({
+        nombre: regex, estado: true
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: proveedores,
@@ -188,9 +201,10 @@ const buscarProveedores = async(termino = '', res = response)=>{
 
 }
 
-const buscarClientes = async(termino = '', res = response)=>{
+const buscarClientes = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
+    const {limit = 5, from = 0} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -205,7 +219,9 @@ const buscarClientes = async(termino = '', res = response)=>{
     const regex = new RegExp(termino, 'i')
 
     // Busca que el termino este en nombre y el estado siempre sea true
-    const clientes = await Cliente.find({nombre: regex, estado: true});
+    const clientes = await Cliente.find({
+        nombre: regex, estado: true
+    }).skip(Number(from)).limit(Number(limit));
 
     res.json({
         results: clientes,
@@ -227,25 +243,25 @@ const buscar = (req, res = response)=>{
 
     switch(coleccion){
         case 'usuarios':
-            buscarUsuarios(termino, res);
+            buscarUsuarios(termino, req, res);
         break;
         case 'categorias':
-            buscarCategorias(termino, res);
+            buscarCategorias(termino, req, res);
         break;
         case 'productos':
-            buscarProductos(termino, res);
+            buscarProductos(termino, req, res);
         break;
         case 'unidades':
-            buscarUnidades(termino, res);
+            buscarUnidades(termino, req, res);
         break;
         case 'almacenes':
-            buscarAlmacenes(termino, res);
+            buscarAlmacenes(termino, req, res);
         break;
         case 'proveedores':
-            buscarProveedores(termino, res);
+            buscarProveedores(termino, req, res);
         break;
         case 'clientes':
-            buscarClientes(termino, res);
+            buscarClientes(termino, req, res);
         break;
         default:
             res.status(500).json({
