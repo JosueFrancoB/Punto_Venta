@@ -118,12 +118,12 @@ const updateProducto = async(req, res = response)=>{
             ok: false, msg: `El producto ${data.nombre} ya existe`
         });
     
-    if (body.clave){
+    if (data.clave){
         const key_repeated = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave: data.clave}, { estado: true } ]});
         if(key_repeated.length > 0) return res.status(400).json({ok: false, msg: "La clave ya existe"}); 
     }
 
-    if (body.clave_alterna){
+    if (data.clave_alterna){
         const altern_key = await Producto.find({$and: [ { "_id": { $ne: id } }, { clave_alterna: data.clave_alterna}, { estado: true } ]});
         if(altern_key.length > 0) return res.status(400).json({ok: false, msg: "La clave alterna ya existe"}); 
     }

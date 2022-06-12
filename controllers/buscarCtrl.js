@@ -75,7 +75,7 @@ const buscarCategorias = async(termino = '', req, res = response)=>{
 const buscarProductos = async(termino = '', req, res = response)=>{
     
     const esMongoId = ObjectId.isValid(termino); //True
-    const {limit = 5, from = 0} = req.query;
+    const {limit = 5, from = 0, filter = 'nombre'} = req.query;
 
     // Quiere decir que esta buscando con el id
     if(esMongoId){
@@ -88,23 +88,27 @@ const buscarProductos = async(termino = '', req, res = response)=>{
 
     // Lo hago que sea insensible a mayusculas y minusculas
     const regex = new RegExp(termino, 'i');
+    let productos = {}
 
-    //Para Buscar todos los productos con una categoría
-    const categoria = await Categoria.find({nombre: regex});
-    let idCategoria;
+    if (filter === 'categoria'){
+        //Para Buscar todos los productos con una categoría
+        const categoria = await Categoria.find({nombre: regex});
+        let idCategoria;
 
-    // el find de categoria devuelve un arreglo, si no encuentra nada esta vacío
-    if(categoria.length > 0){
-        idCategoria  = categoria[0]._id;
+        // el find de categoria devuelve un arreglo, si no encuentra nada esta vacío
+        if(categoria.length > 0){
+            idCategoria  = categoria[0]._id;
+        }else{
+            idCategoria = 0;
+        }
+        // Busca que el termino este en nombre o por categoria y que en cualquier caso el estado siempre sea true
+        productos = await Producto.find({$or: [{nombre: regex}, {clave: regex}, {clave_alterna: regex}, {categoria: ObjectId(idCategoria)}], $and: [{estado: true}]}).sort({nombre: 'asc'}).populate('categoria', 'nombre').skip(Number(from)).limit(Number(limit));
     }else{
-        idCategoria = 0;
+        productos = await Producto.find({
+            $or: [{nombre: regex}, {clave: regex}, {clave_alterna: regex}],
+            $and: [{estado: true}]
+        }).sort({nombre: 'asc'}).skip(Number(from)).limit(Number(limit));
     }
-    // Busca que el termino este en nombre o por categoria y que en cualquier caso el estado siempre sea true
-    const productos = await Producto.find({
-        $or: [{nombre: regex}, {clave: regex}, {clave_alterna: regex}, {categoria: ObjectId(idCategoria)}],
-        $and: [{estado: true}]
-    }).populate('categoria', 'nombre').skip(Number(from)).limit(Number(limit));
-    console.log(`Los productos: ${productos}`);
 
     res.json({
         results: productos,
