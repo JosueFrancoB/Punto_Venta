@@ -195,7 +195,8 @@ const buscarProveedores = async(termino = '', req, res = response)=>{
 
     // Busca que el termino este en nombre y el estado siempre sea true
     const proveedores = await Proveedor.find({
-        nombre: regex, estado: true
+        $or: [{nombre_contacto: regex}, {nombre_empresa: regex}],
+        $and: [{estado: true}]
     }).skip(Number(from)).limit(Number(limit));
 
     res.json({
