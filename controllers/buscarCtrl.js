@@ -225,7 +225,8 @@ const buscarClientes = async(termino = '', req, res = response)=>{
 
     // Busca que el termino este en nombre y el estado siempre sea true
     const clientes = await Cliente.find({
-        nombre: regex, estado: true
+        $or: [{nombre: regex}, {nombre_empresa: regex}],
+        $and: [{estado: true}]
     }).skip(Number(from)).limit(Number(limit));
 
     res.json({
