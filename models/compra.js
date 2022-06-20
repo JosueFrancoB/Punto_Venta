@@ -9,7 +9,8 @@ const CompraSchema = new Schema({
         id_producto: Schema.Types.ObjectId,
         nombre: String,
         cantidad: Number,
-        precio: Number
+        precio: Number,
+        unidad_compra: String
     }],
     proveedor:{
         id_proveedor: Schema.Types.ObjectId,

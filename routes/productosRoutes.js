@@ -28,6 +28,10 @@ router.get('/categoria/:id', [
 router.post('/', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('unidad_compra', 'La unidad compra es obligatoria').not().isEmpty(),
+    check('unidad_venta', 'La unidad de venta es obligatoria').not().isEmpty(),
+    check('precio_compra', 'El precio de compra es obligatorio').not().isEmpty(),
+    check('precio_venta', 'El precio de venta es obligatorio').not().isEmpty(),
     check('categoria', 'No es un id válido').isMongoId(),
     check('categoria').custom(existeCategoriaPorId),
     validarCampos
@@ -37,6 +41,10 @@ router.post('/', [
 router.patch('/:id', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+    check('unidad_compra', 'La unidad compra es obligatoria').not().isEmpty(),
+    check('unidad_venta', 'La unidad de venta es obligatoria').not().isEmpty(),
+    check('precio_compra', 'El precio de compra es obligatorio').not().isEmpty(),
+    check('precio_venta', 'El precio de venta es obligatorio').not().isEmpty(),
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeProductoPorId),
     validarCampos

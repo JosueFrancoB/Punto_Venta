@@ -91,6 +91,7 @@ const mostrarImagen = async(req, res=response)=>{
 
     const {id, coleccion} = req.params;
     let modelo;
+    let default_img = '../assets/no-image.jpg'
 
     switch(coleccion){
         case 'users':
@@ -103,6 +104,7 @@ const mostrarImagen = async(req, res=response)=>{
             }
         break;
         case 'productos':
+            default_img = '../assets/product-not-found.png'
             modelo = await Producto.findById(id);
             if(!modelo){
                 return res.status(400).json({
@@ -136,8 +138,8 @@ const mostrarImagen = async(req, res=response)=>{
             return res.sendFile(pathImg);
         }
     }
-
-    const pathDefaultImg = path.join(__dirname, '../assets/no-image.jpg');
+    
+    const pathDefaultImg = path.join(__dirname, default_img);
     res.sendFile(pathDefaultImg);
 }
 

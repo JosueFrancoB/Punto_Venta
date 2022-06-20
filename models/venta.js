@@ -26,6 +26,7 @@ const VentaSchema = new Schema({
         nombre: String,
         precio: Number,
         cantidad: Number,
+        unidad_venta: String
     }],
     cliente:{
         _id: Schema.Types.ObjectId,

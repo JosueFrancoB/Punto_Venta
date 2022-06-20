@@ -3,15 +3,51 @@ const mongoose = require('mongoose');
 
 const Venta = require('../models/venta');
 const Producto = require('../models/producto');
+const {convertArrayInObjectsArray, diacriticInsensitiveRegExp, escapeStringRegexp} = require('../helpers/busqueda')
 
+const isValidJson = (json)  =>{
+    try {
+        JSON.parse(json);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
 
 const getSales = async (req, res) => {
+    const all_fields = JSON.stringify(["codigo", 'usuario_venta.nombre', 'cliente.nombre'])
+    let {limite = 10, desde = 0, search  = "" , search_fields = all_fields, estado = true} = req.query;
 
-    const {limite = 10, desde = 0, estado = true} = req.query;
+    if(!isValidJson(search_fields)){
+        return res.status(400).json({ param: "search_fields",
+        location: "params" ,
+        msg :"invalid search_fields is not json valid"  ,
+        msg_es:`la variable search_fields debe de ser un json` });
+    }
+
+    if (search_fields === '["all"]')
+        search_fields = all_fields
+    search_fields = JSON.parse(search_fields);
+
+    if (!Array.isArray(search_fields)) {
+        search_fields = [search_fields];
+    }
+
+    search = await diacriticInsensitiveRegExp(escapeStringRegexp(search));
+    const expresion = new RegExp(search, "i");
+    const search_in = await convertArrayInObjectsArray(
+        search_fields,
+        expresion
+    );
+
+    let query = {
+        $and: [{ estado }],
+        $or: search_in,
+    };
 
     const [total, ventas] = await Promise.all([
-        Venta.countDocuments({estado}),
-        Venta.find({estado})
+        Venta.countDocuments(query),
+        Venta.find(query)
         .skip(Number(desde))
         .limit(Number(limite))
     ]);
