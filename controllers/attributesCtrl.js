@@ -357,12 +357,14 @@ const unitsPost = async (req, res = response) => {
             msg: `La unidad ${nombre} ya existe`
         })
     }
-    const unitAbvDB = await Unit.find({abreviacion, estado: true});
-    if(unitAbvDB.length > 0){
-        return res.status(400).json({
-            ok: false,
-            msg: `La abreviacion ${abreviacion} ya existe`
-        })
+    if (abreviacion){
+        const unitAbvDB = await Unit.find({abreviacion, estado: true});
+        if(unitAbvDB.length > 0){
+            return res.status(400).json({
+                ok: false,
+                msg: `La abreviacion ${abreviacion} ya existe`
+            })
+        }
     }
     const unidad = new Unit({nombre, abreviacion});
 

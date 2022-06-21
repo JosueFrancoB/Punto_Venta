@@ -59,6 +59,7 @@ const warehousePost = async (req, res = response) => {
     nombre = nombre.toUpperCase().trim()
     if (alias)
         alias = alias.toLowerCase().trim()
+
     const AlmacenDB = await Almacen.find({nombre, estado: true});
     if(AlmacenDB.length > 0){
         return res.status(400).json({
@@ -66,12 +67,14 @@ const warehousePost = async (req, res = response) => {
             msg: `El almacen ${nombre} ya existe`
         })
     }
-    const AlmacenAbvDB = await Almacen.find({alias, estado: true});
-    if(AlmacenAbvDB.length > 0){
-        return res.status(400).json({
-            ok: false,
-            msg: `El alias ${alias} ya existe`
-        })
+    if (alias){
+        const AlmacenAbvDB = await Almacen.find({alias, estado: true});
+        if(AlmacenAbvDB.length > 0){
+            return res.status(400).json({
+                ok: false,
+                msg: `El alias ${alias} ya existe`
+            })
+        }
     }
     const almacen = new Almacen({nombre, alias});
 
