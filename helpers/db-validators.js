@@ -103,6 +103,7 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
 // Devuelve false si es inválido
 // (debe estar en mayúsculas, guiones y espacios intermedios opcionales)
 const validarRFC = (rfc)=> {
+    if (!rfc) return
     const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
     var validado = rfc.match(re);
     if (validado === null)  // Coincide con el formato general del regex?
