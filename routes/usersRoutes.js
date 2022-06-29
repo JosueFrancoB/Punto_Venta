@@ -21,7 +21,7 @@ const {
 const router = Router();
 
 // Solo los dejo con la / porque en el server ya le estoy asignando su ruta
-router.get('/', validarJWT, usersGet);
+router.get('/', [], usersGet);
 
 router.get('/:id', [
     validarJWT,
