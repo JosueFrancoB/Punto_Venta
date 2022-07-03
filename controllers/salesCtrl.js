@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const Venta = require('../models/venta');
 const Producto = require('../models/producto');
+const {most_selled_products} = require('../controllers/statisticsCtrl')
 const {convertArrayInObjectsArray, diacriticInsensitiveRegExp, escapeStringRegexp} = require('../helpers/busqueda')
 
 const isValidJson = (json)  =>{
@@ -110,9 +111,21 @@ const createSale = async (req, res) => {
 
         // Reducir stock de productos
         reduceFromStock(data.productos);
+        let productos = []
+        data.productos.forEach(product => {
+            productos.push({nombre: product.nombre, cantidad: product.cantidad})
+        });
+        let week_day = fecha.getDay()
+        let date = fecha.getFullYear() + '/'
+        + ('0' + (fecha.getMonth()+1)).slice(-2) + '/'
+        + ('0' + fecha.getDate()).slice(-2);
+
         const venta = new Venta(data);
         await venta.save();
-
+        most_selled_products(productos, date, 'day')
+        most_selled_products(productos, date, 'month')
+        most_selled_products(productos, date, 'year')
+        
         return res.status(201).json({
             ok: true,
             venta
