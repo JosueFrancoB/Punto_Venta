@@ -41,7 +41,7 @@ const most_selled_products = async(productos, date, date_key)=>{
     let data = doc_data[0].toObject()
     let best_products = data.products
     best_products.sort((a,b) => b.cantidad - a.cantidad);
-    best_products = best_products.splice(0,4)
+    best_products = best_products.splice(0,10)
     console.log(`best ${best_products}`)
     await statistic[date_key].findOneAndUpdate(query_date, {$set: {most_selled_products: best_products}})
     
