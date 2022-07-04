@@ -10,11 +10,19 @@ const day_schema = Schema({
         type: [],
         default: []
     },
-    best_employees: {
+    seller_employees: {
         type: [],
         default: []
     },
-    best_clients: {
+    money_employees: {
+        type: [],
+        default: []
+    },
+    rich_clients: {
+        type: [],
+        default: []
+    },
+    frecuency_clients: {
         type: [],
         default: []
     },
