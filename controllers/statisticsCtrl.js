@@ -72,7 +72,7 @@ const most_selled_products = async(productos, date, date_key)=>{
         let data = doc_data[0].toObject()
         let best_products = data.products
         best_products.sort((a,b) => b.cantidad - a.cantidad);
-        best_products = best_products.slice(0,5)
+        best_products = best_products.slice(0,10)
         await statistic[date_key].findOneAndUpdate(query_date, {$set: {most_selled_products: best_products}})
     }
 }
@@ -111,9 +111,9 @@ const best_employees = async(empleados, date, date_key)=>{
         let data = doc_data[0].toObject()
         let b_employees = data.employees
         b_employees.sort((a,b) => b.dinero_ventas - a.dinero_ventas);
-        let money_employees = b_employees.slice(0,3)
+        let money_employees = b_employees.slice(0,10)
         b_employees.sort((a,b) => b.num_ventas - a.num_ventas);
-        let seller_employees = b_employees.slice(0,3)
+        let seller_employees = b_employees.slice(0,10)
         await statistic[date_key].findOneAndUpdate(query_date, {$set: {money_employees, seller_employees}})
     }
     
@@ -155,9 +155,9 @@ const best_clients = async(clientes, date, date_key)=>{
         let data = doc_data[0].toObject()
         let b_clients = data.clients
         b_clients.sort((a,b) => b.dinero_compras - a.dinero_compras);
-        let rich_clients = b_clients.slice(0,5)
+        let rich_clients = b_clients.slice(0,10)
         b_clients.sort((a,b) => b.num_compras - a.num_compras);
-        let frecuency_clients = b_clients.slice(0,5)
+        let frecuency_clients = b_clients.slice(0,10)
         await statistic[date_key].findOneAndUpdate(query_date, {$set: {rich_clients, frecuency_clients}})
     }
 }
