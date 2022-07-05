@@ -80,6 +80,14 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) =>{
     return true;
 }
 
+const stadisticasPermitidas = (stadistica = '', stadisticas = []) =>{
+    const incluida = stadisticas.includes(stadistica);
+    if(!incluida){
+        throw new Error(`La stadistica ${stadistica} no es permitida, ${stadisticas}`)
+    }
+    return true;
+}
+
 const telefonoUnico = async(telefono = '', db_model = "") =>{
     var existeTelefono = undefined
     switch (db_model) {
@@ -118,6 +126,7 @@ module.exports ={
     existeCategoriaPorId,
     existeProductoPorId,
     coleccionesPermitidas,
+    stadisticasPermitidas,
     telefonoUnico,
     existeProveedorPorId,
     existeClientePorId,

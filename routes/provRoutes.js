@@ -37,7 +37,6 @@ router.patch('/:id', [
 
 
 router.post('/', [
-    check('nombre_contacto', 'El nombre de contacto es obligatorio').not().isEmpty(),
     check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
     check('telefonos.*', 'El teléfono no es válido').isMobilePhone(),
     check('telefonos.*').custom(t => telefonoUnico(t,"prov")),

@@ -2,8 +2,7 @@ const {Schema, model} = require('mongoose');
 
 const ProveedorSchema = Schema({
     nombre_contacto: {
-        type: String,
-        required: [true, 'El nombre es obligatorio'],
+        type: String
     },
     nombre_empresa: {
         type: String,

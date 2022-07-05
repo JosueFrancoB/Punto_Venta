@@ -2,13 +2,24 @@ const { response } = require("express");
 const statistic = require("../models/statistics");
 
 
+const get_number_week = ()=>{
+    let currentDate = new Date();
+    let startDate = new Date(currentDate.getFullYear(), 0, 1);
+    let days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+    return Math.ceil(days / 7)
+}
+
 const process_date = async(date, date_key)=>{
     if(date_key === 'year'){
-        date = date.split('/')[0]
+        date = date.split('-')[0]
     }else if(date_key === 'month'){
-        date = date.split('/')
+        date = date.split('-')
         date.pop()
-        date = date.join('/')
+        date = date.join('-')
+    }else if(date_key === 'week'){
+        date = date.split('-')[0]
+        let week = await get_number_week().toString()
+        date = `${date}-${week}`
     }
     return date
 }
@@ -151,10 +162,45 @@ const best_clients = async(clientes, date, date_key)=>{
     }
 }
 
+const get_statistics = async(req, res=response)=>{
+    let fields = ['most_selled_products', 'rich_clients', 'frecuency_clients', 'seller_employees', 'money_employees']
+    const {stat, date_key, date} = req.params;
+    let query = {[date_key]: date}
+    console.log('date_key', date_key)
+    console.log('date', date)
+    console.log('stat', stat)
+    let results = await statistic[date_key].find(query);
+    console.log(results[0])
+    return  res.status(200).json({
+        ok: true,
+        statistics: results[0]
+    });
+    // switch (statistic) {
+    //     case 'most_selled_products':
+    //         return results[statistic]
+    //         break;
+    //     case 'rich_clients':
+            
+    //         break;
+    //     case 'frecuency_clients':
+            
+    //         break;
+    //     case 'seller_employees':
+            
+    //         break;
+    //     case 'money_employees':
+            
+    //         break;
+    
+    //     default:
+    //         break;
+    // }
+}
 
 module.exports = {
     init_collections,
     most_selled_products,
     best_employees,
     best_clients,
+    get_statistics
 }
