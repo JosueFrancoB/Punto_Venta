@@ -163,38 +163,13 @@ const best_clients = async(clientes, date, date_key)=>{
 }
 
 const get_statistics = async(req, res=response)=>{
-    let fields = ['most_selled_products', 'rich_clients', 'frecuency_clients', 'seller_employees', 'money_employees']
     const {stat, date_key, date} = req.params;
     let query = {[date_key]: date}
-    console.log('date_key', date_key)
-    console.log('date', date)
-    console.log('stat', stat)
     let results = await statistic[date_key].find(query);
-    console.log(results[0])
     return  res.status(200).json({
         ok: true,
-        statistics: results[0]
+        statistics: results.length > 0 ? results[0] : [] 
     });
-    // switch (statistic) {
-    //     case 'most_selled_products':
-    //         return results[statistic]
-    //         break;
-    //     case 'rich_clients':
-            
-    //         break;
-    //     case 'frecuency_clients':
-            
-    //         break;
-    //     case 'seller_employees':
-            
-    //         break;
-    //     case 'money_employees':
-            
-    //         break;
-    
-    //     default:
-    //         break;
-    // }
 }
 
 module.exports = {
