@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const Venta = require('../models/venta');
 const Producto = require('../models/producto');
+const {init_collections, most_selled_products, best_clients, best_employees} = require('../controllers/statisticsCtrl')
 const {convertArrayInObjectsArray, diacriticInsensitiveRegExp, escapeStringRegexp} = require('../helpers/busqueda')
 
 const isValidJson = (json)  =>{
@@ -107,12 +108,43 @@ const createSale = async (req, res) => {
     };
 
     try{
-
         // Reducir stock de productos
         reduceFromStock(data.productos);
+        let productos = []
+        data.productos.forEach(product => {
+            productos.push({nombre: product.nombre, cantidad: product.cantidad})
+        });
+        let empleados = [{nombre: data.usuario_venta.nombre, dinero_ventas: data.total_a_pagar}]
+
+        let date = fecha.getFullYear() + '-'
+        + ('0' + (fecha.getMonth()+1)).slice(-2) + '-'
+        + ('0' + fecha.getDate()).slice(-2);
+
         const venta = new Venta(data);
         await venta.save();
 
+        await init_collections(date, 'day')
+        await init_collections(date, 'week')
+        await init_collections(date, 'month')
+        await init_collections(date, 'year')
+
+        most_selled_products(productos, date, 'day')
+        most_selled_products(productos, date, 'week')
+        most_selled_products(productos, date, 'month')
+        most_selled_products(productos, date, 'year')
+
+        best_employees(empleados, date, 'day')
+        best_employees(empleados, date, 'week')
+        best_employees(empleados, date, 'month')
+        best_employees(empleados, date, 'year')
+        
+        if (data.cliente){
+            let clientes = [{nombre: data.cliente.nombre, nombre_empresa: data.cliente.nombre_empresa, dinero_compras: data.total_a_pagar}]
+            best_clients(clientes, date, 'day')
+            best_clients(clientes, date, 'week')
+            best_clients(clientes, date, 'month')
+            best_clients(clientes, date, 'year')
+        }
         return res.status(201).json({
             ok: true,
             venta

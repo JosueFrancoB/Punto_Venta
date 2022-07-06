@@ -36,6 +36,21 @@ const crearRoles = async()=>{
     }
 }
 
+const initStatistics = async()=>{
+    let roles = []
+    
+    Object.keys(config.roles).forEach(key => roles.push(config.roles[key]))
+    if(roles.length !== 0){
+        for(let x in roles){
+            const existeRol = await Role.findOne({rol: roles[x]});
+            if (!existeRol){
+                let rol = new Role({rol: roles[x]})
+                await rol.save();
+            }
+        }
+    }
+}
+
 
 module.exports= {
     dbConnection,

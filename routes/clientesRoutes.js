@@ -35,7 +35,6 @@ router.patch('/:id', [
 // en este caso se usan para que validen todos los campos antes de hacer el método post
 router.post('/', [
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('nombre_empresa', 'El nombre de la empresa es obligatoria').not().isEmpty(),
     check('telefonos.*', 'El teléfono no es válido').isMobilePhone(),
     check('telefonos.*').custom(t => telefonoUnico(t,"cli")),
     check('correos.*', 'El correo no es válido').isEmail(),

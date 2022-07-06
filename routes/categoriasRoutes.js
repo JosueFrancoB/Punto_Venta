@@ -19,14 +19,14 @@ router.get('/:id', [
 
 // Crear una categoria - privado cualquier persona con token válido
 router.post('/', [
-    ////validarJWT,
+    validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     validarCampos
 ], crearCategoria);
 
 // Actualizar - privado cualquier persona con token válido
 router.patch('/:id', [
-    //validarJWT,
+    validarJWT,
     check('id', 'No es un id válido').isMongoId(),
     check('id').custom(existeCategoriaPorId),
     validarCampos

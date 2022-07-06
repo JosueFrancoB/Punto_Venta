@@ -7,7 +7,6 @@ const ClienteSchema = Schema({
     },
     nombre_empresa: {
         type: String,
-        required: [true, 'El nombre de la empresa es obligatorio'],
     },
     telefonos: {
         type: [String],

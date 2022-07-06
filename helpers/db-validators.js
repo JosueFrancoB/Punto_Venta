@@ -80,6 +80,14 @@ const coleccionesPermitidas = (coleccion = '', colecciones = []) =>{
     return true;
 }
 
+const stadisticasPermitidas = (stadistica = '', stadisticas = []) =>{
+    const incluida = stadisticas.includes(stadistica);
+    if(!incluida){
+        throw new Error(`La stadistica ${stadistica} no es permitida, ${stadisticas}`)
+    }
+    return true;
+}
+
 const telefonoUnico = async(telefono = '', db_model = "") =>{
     var existeTelefono = undefined
     switch (db_model) {
@@ -103,11 +111,11 @@ const telefonoUnico = async(telefono = '', db_model = "") =>{
 // Devuelve false si es inválido
 // (debe estar en mayúsculas, guiones y espacios intermedios opcionales)
 const validarRFC = (rfc)=> {
-    if (!rfc) return
+    if (!rfc) return true
     const re = /^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/;
     var validado = rfc.match(re);
     if (validado === null)  // Coincide con el formato general del regex?
-        throw new Error(`Rfc no valido`);
+        throw new Error(`El RFC no es válido`);
     return true
 }
 
@@ -118,6 +126,7 @@ module.exports ={
     existeCategoriaPorId,
     existeProductoPorId,
     coleccionesPermitidas,
+    stadisticasPermitidas,
     telefonoUnico,
     existeProveedorPorId,
     existeClientePorId,
