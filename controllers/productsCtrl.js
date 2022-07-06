@@ -45,7 +45,7 @@ const crearProducto = async(req, res = response)=>{
 };
 
 const ProductosGet = async(req, res = response)=>{
-    const {limite = 10, desde = 0, category = ''} = req.query;
+    const {limite = 30, desde = 0, category = ''} = req.query;
     const query = {estado: true};
     if (category != ''){
         query.categoria = category;
@@ -81,7 +81,7 @@ const getProductoPorID = async(req, res = response)=>{
 }
 
 const getProductosPorCategoria = async(req, res = response)=>{
-    const {limite = 10, desde = 0} = req.query;
+    const {limite = 30, desde = 0} = req.query;
     
     const {id} = req.params;
 

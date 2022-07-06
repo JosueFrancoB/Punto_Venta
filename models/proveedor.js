@@ -18,7 +18,6 @@ const ProveedorSchema = Schema({
     },
     rfc: {
         type: String,
-        unique: true
     },
     img: {
         type: String

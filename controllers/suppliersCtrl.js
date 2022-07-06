@@ -53,12 +53,14 @@ const provPost = async(req, res = response) =>{
     const {nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones} = req.body;
     const proveedor = new Proveedor({nombre_contacto, nombre_empresa, telefonos, correos, rfc, direcciones});
 
-    const proveedorDB = await Proveedor.find({rfc, estado: true});
-    if(proveedorDB.length > 0){
-        return res.status(400).json({
-            ok: false,
-            msg: `El rfc ${rfc} ya está registrado`
-        })
+    if(rfc){
+        const proveedorDB = await Proveedor.find({rfc, estado: true});
+        if(proveedorDB.length > 0){
+            return res.status(400).json({
+                ok: false,
+                msg: `El rfc ${rfc} ya está registrado`
+            })
+        }
     }
 
     await proveedor.save();
@@ -73,12 +75,16 @@ const provPatch = async(req, res = response) =>{
     const {id} = req.params;
     const {_id, ...resto} = req.body;
 
-    const proveedorDB = await Proveedor.find({rfc: resto.rfc, estado: true});
-    if(proveedorDB.length > 0){
-        return res.status(400).json({
-            ok: false,
-            msg: `El rfc ${resto.rfc} ya está registrado`
-        })
+    if(resto.rfc){
+        const proveedorDB = await Proveedor.find({
+            $and: [ { "_id": { $ne: id } }, {rfc: resto.rfc}, {estado: true}]
+        });
+        if(proveedorDB.length > 0){
+            return res.status(400).json({
+                ok: false,
+                msg: `El rfc ${resto.rfc} ya está registrado`
+            })
+        }
     }
 
     const proveedor = await Proveedor.findByIdAndUpdate(id, resto);
